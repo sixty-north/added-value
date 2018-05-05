@@ -9,3 +9,13 @@ def test_smoke(app, status, warning):
     app.build()
     html = (app.outdir / 'index.html').read_text()
     assert "Examples for added-value" in html
+
+
+@with_app(
+    srcdir='test/examples/source',
+    confdir='test/examples/source',
+    copy_srcdir_to_tmpdir=True)
+def test_repr_literal_integer_html_contains_value(app, status, warning):
+    app.build()
+    html = (app.outdir / 'index.html').read_text()
+    assert "The answer to life, the Universe and everything is 42." in html
