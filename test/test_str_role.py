@@ -1,6 +1,6 @@
 from test.example_source import with_test_examples_source
 
-basename = "test_repr_role"
+basename = "test_str_role"
 html_filename = basename + ".html"
 
 

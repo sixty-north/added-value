@@ -3,7 +3,7 @@ from docutils import nodes
 from added_value.pyobj_role import make_pyobj_role
 
 
-def make_repr_node(rawtext, app, prefixed_name, obj, parent, modname, options):
+def make_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):
     """Render a Python object to text using the repr() function.
 
     :param rawtext: Text being replaced with link node.
@@ -18,5 +18,4 @@ def make_repr_node(rawtext, app, prefixed_name, obj, parent, modname, options):
     node = nodes.Text(text, rawsource=rawtext)
     return node
 
-
-repr_role = make_pyobj_role(make_repr_node)
+str_role = make_pyobj_role(make_str_node)
