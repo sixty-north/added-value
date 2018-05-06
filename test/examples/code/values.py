@@ -5,3 +5,9 @@ tricolon = [
     'the Universe',
     'everything',
 ]
+
+flavors = [
+    'cherry',
+    'chocolate',
+    'pear',
+]
