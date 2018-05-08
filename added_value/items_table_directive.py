@@ -1,5 +1,9 @@
+import csv
 from abc import abstractmethod, ABCMeta
+from collections import Mapping
 from itertools import chain, repeat, islice
+
+from six import StringIO
 
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives
@@ -89,9 +93,12 @@ class ItemsTableDirective(Directive):
         max_header_cols = 0
         if 'header' in self.options:
             # TODO: Have the option for this to be a Python object too.
-            # TODO: For now, split on commas
-            header_row = list(map(str.strip, self.options['header'].split(',')))
-            table_head.append(header_row)
+            header = self.options['header']
+            header_stream = StringIO(header)
+            reader = csv.reader(header_stream, delimiter=',', quotechar='"')
+            header_row = next(reader)
+            stripped_header_row = [cell.strip() for cell in header_row]
+            table_head.append(stripped_header_row)
             max_header_cols = len(header_row)
         return table_head, max_header_cols
 
@@ -104,20 +111,48 @@ class ItemsTableDirective(Directive):
 
         Returns:
             A list of lists represents rows of cells.
+
+        Raises:
+            TypeError: If the type couldn't be interpreted as a table.
         """
-        rows = []
-        max_cols = 0
-        for obj_row in obj:
-            if isinstance(obj_row, NonStringIterable):
-                row = obj_row
-            else:
-                row = [obj_row]
-            max_cols = max(max_cols, len(row))
-            rows.append(row)
+        if isinstance(obj, list):
+            max_cols, rows = ItemsTableDirective.interpret_list(obj)
+        elif isinstance(obj, Mapping):
+            max_cols, rows = ItemsTableDirective.interpret_dict(obj)
+        else:
+            # TODO: We can do fancy stuff like dicts of dicts later!
+            raise TypeError("Unsupported Python object {!r} for tables.")
 
         rectangular_rows = [list(pad(row, max_cols, '')) for row in rows]
 
         return rectangular_rows, max_cols
+
+    @staticmethod
+    def make_row(obj_row):
+        return list(obj_row) if isinstance(obj_row, NonStringIterable) else [obj_row]
+
+    @staticmethod
+    def interpret_list(obj):
+        """This should handle a list items and of a list of lists of items."""
+        rows = []
+        max_cols = 0
+        for obj_row in obj:
+            row = ItemsTableDirective.make_row(obj_row)
+            max_cols = max(max_cols, len(row))
+            rows.append(row)
+        return max_cols, rows
+
+    @staticmethod
+    def interpret_dict(obj):
+        """This should handle a dictionary of items and a dictionary of lists of items."""
+        rows = []
+        max_cols = 0
+        for key, value in obj.items():
+            row = [key]
+            row.extend(ItemsTableDirective.make_row(value))
+            max_cols = max(max_cols, len(row))
+            rows.append(row)
+        return max_cols, rows
 
     def augment_cells(self, rows, source):
         """Convert each cell into a tuple suitable for consumption by build_table.
@@ -125,7 +160,8 @@ class ItemsTableDirective(Directive):
         I think this has to do with cell spans, but I'm not sure, and we don't need it.
         """
         # TODO: Hardwired str transform.
-        return [[(0, 0, 0, StringList(str(cell).splitlines(), source=source)) for cell in row] for row in rows]
+        return [[(0, 0, 0, StringList(str(cell).splitlines(), source=source))
+                 for cell in row] for row in rows]
 
     def run(self):
 
@@ -138,10 +174,14 @@ class ItemsTableDirective(Directive):
                 "Could not locate Python object {}. ({} directive).".format(obj_name, self.name))
         table_head, max_header_cols = self.process_header_option()
         rows, max_cols = self.interpret_obj(obj)
-        rows = self.augment_cells(rows, source=prefixed_name)
         max_cols = max(max_cols, max_header_cols)
         col_widths = self.get_column_widths(max_cols)
+        table_head.extend(rows[:self.header_rows])
         table_body = rows[self.header_rows:]
+
+        table_head = self.augment_cells(table_head, source=prefixed_name)
+        table_body = self.augment_cells(table_body, source=prefixed_name)
+
         table = (col_widths, table_head, table_body)
         table_node = self.state.build_table(table, self.content_offset,
                                             self.stub_columns, widths=self.widths)

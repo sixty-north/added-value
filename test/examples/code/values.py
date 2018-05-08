@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 the_answer = 42
 
 tricolon = [
@@ -31,7 +33,7 @@ month_lengths = [
     ['January', 31],
     ['February', 28],
     ['March', 31],
-    'April',
+    ['April', 30],
     ['May', 31],
     ['June', 30],
     ['July', 31],
@@ -41,4 +43,6 @@ month_lengths = [
     ['November', 31],
     ['December', 31],
 ]
+
+month_day_ranges = OrderedDict((name, list(range(1, length+1))) for name, length in month_lengths)
 
