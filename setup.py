@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+import io
 
 from setuptools import setup
 
@@ -24,19 +26,23 @@ def read(name, **kwargs):
 
 
 def read_version():
-    "Read the `(version-string, version-info)` from `cosmic_ray/version.py`."
-    version_file = local_file('cosmic_ray', 'version.py')
+    "Read the `(version-string, version-info)` from `added_value/version.py`."
+    version_file = local_file('added_value', 'version.py')
     local_vars = {}
     with open(version_file) as handle:
         exec(handle.read(), {}, local_vars)  # pylint: disable=exec-used
     return (local_vars['__version__'], local_vars['__version_info__'])
+
+install_requires = [
+    'sphinx'
+]
 
 
 setup(
     name='added-value',
     packages=['added-value'],
     version = read_version()[0],
-    url='https://github.com/rob-smallshire/added-value',
+    url='https://github.com/sixty-north/added-value',
     download_url="https://pypi.python.org/pypi/added-value",
     license='BSD',
     author='Robert Smallshire',
@@ -59,6 +65,10 @@ setup(
     ],
     platforms='any',
     include_package_data=True,
-    install_requires=requires,
+    install_requires=install_requires,
     requires=['sphinx'],
+    extras_require={
+        'test': ['pytest', 'sphinx-testing'],
+        'docs': ['sphinx', 'sphinx_rtd_theme'],
+    }
 )
