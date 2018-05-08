@@ -3,8 +3,8 @@ from docutils import nodes
 from added_value.pyobj_role import make_pyobj_role
 
 
-def make_any_items_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):
-    """Render a Python sequence as a comma-separated list, with an "and" for the final item.
+def make_any_items_node(rawtext, app, prefixed_name, obj, parent, modname, options):
+    """Render a Python sequence as a comma-separated list, with an "or" for the final item.
 
     :param rawtext: Text being replaced with link node.
     :param app: Sphinx application context
@@ -19,7 +19,7 @@ def make_any_items_str_node(rawtext, app, prefixed_name, obj, parent, modname, o
     elif len(obj) == 1:
         text = str(obj)
     elif len(obj) == 2:
-        text = "{!s} and {!s}".format(obj[0], obj[1])
+        text = "{!s} or {!s}".format(obj[0], obj[1])
     else:
         all_but_last = ', '.join(map(str, obj[:-1]))
         last = obj[-1]
@@ -27,4 +27,4 @@ def make_any_items_str_node(rawtext, app, prefixed_name, obj, parent, modname, o
     node = nodes.Text(text, rawsource=rawtext)
     return node
 
-any_items_str_role = make_pyobj_role(make_any_items_str_node)
+any_items_role = make_pyobj_role(make_any_items_node)
