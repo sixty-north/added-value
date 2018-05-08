@@ -26,7 +26,7 @@ def format_role(name, rawtext, text, lineno, inliner, options=None, content=None
     if content is None:
         content = []
 
-    name, _, format_spec = text.partition(',')
+    name, _, format_spec = tuple(field.strip() for field in text.partition(','))
 
     try:
         prefixed_name, obj, parent, modname = import_by_name(name)
