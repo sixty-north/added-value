@@ -40,7 +40,7 @@ install_requires = [
 
 setup(
     name='added-value',
-    packages=['added-value'],
+    packages=['added_value'],
     version = read_version()[0],
     url='https://github.com/sixty-north/added-value',
     download_url="https://pypi.python.org/pypi/added-value",

@@ -14,7 +14,7 @@ def make_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):
     :param module: The name of the module containing obj.
     :param options: Options dictionary passed to role func.
     """
-    text = repr(obj)
+    text = str(obj)
     node = nodes.Text(text, rawsource=rawtext)
     return node
 

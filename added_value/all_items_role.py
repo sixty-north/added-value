@@ -3,7 +3,7 @@ from docutils import nodes
 from added_value.pyobj_role import make_pyobj_role
 
 
-def make_all_items_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):
+def make_all_items_node(rawtext, app, prefixed_name, obj, parent, modname, options):
     """Render a Python sequence as a comma-separated list, with an "and" for the final item.
 
     :param rawtext: Text being replaced with link node.
@@ -27,4 +27,4 @@ def make_all_items_str_node(rawtext, app, prefixed_name, obj, parent, modname, o
     node = nodes.Text(text, rawsource=rawtext)
     return node
 
-all_items_str_role = make_pyobj_role(make_all_items_str_node)
+all_items_role = make_pyobj_role(make_all_items_node)
