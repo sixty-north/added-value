@@ -8,8 +8,6 @@ from setuptools import setup
 with open('README.rst', 'r') as readme:
     long_description = readme.read()
 
-requires = ['Sphinx>=1.7.4']
-
 
 def local_file(*name):
     return os.path.join(
@@ -66,7 +64,7 @@ setup(
     platforms='any',
     include_package_data=True,
     install_requires=install_requires,
-    requires=['sphinx'],
+    requires=install_requires,
     extras_require={
         'test': ['pytest', 'sphinx-testing'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
