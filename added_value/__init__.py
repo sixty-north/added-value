@@ -1,2 +1,2 @@
-from sphinxext import setup
-from version import __version__
+from .sphinxext import setup
+from .version import __version__
