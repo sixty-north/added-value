@@ -12,19 +12,25 @@ class Key(object):
     def reverse(self):
         return self._reverse
 
+
 def identity(x):
     return x
+
 
 def asc(func=identity):
     return Key(func, reverse=False)
 
+
 def dec(func=identity):
     return Key(func, reverse=True)
 
+
 _asis = Key(func=lambda x: None)
+
 
 def asis():
     return _asis
+
 
 def multisorted(items, *keys):
     if len(keys) == 0:
