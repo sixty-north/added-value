@@ -3,9 +3,11 @@ from itertools import count, chain, product
 
 import operator
 
-from added_value.items_table_directive import NonStringIterable
-from added_value.sorted_frozen_set import SortedFrozenSet
+from more_itertools import grouper
 
+from added_value.items_table_directive import NonStringIterable
+from added_value.multisort import tuplesorted
+from added_value.sorted_frozen_set import SortedFrozenSet
 
 depth_marker = object()
 ROOT = object()
@@ -51,38 +53,20 @@ class Missing(object):
 MISSING = Missing()
 
 
-def tabulate_body(obj, v_level_indexes, h_level_indexes):
+def tabulate_body(obj, level_keys, v_level_indexes, h_level_indexes, v_level_sort_keys=None, h_level_sort_keys=None):
     """
     Args:
         v_level_indexes: A sequence of level indexes.
         h_level_indexes: A sequence of level indexes.
     """
-    level_keys = breadth_first(obj)
-    h_level_set = SortedFrozenSet(h_level_indexes)
-    if len(h_level_indexes) != len(h_level_set):
-        raise ValueError("h_level_indexes contains duplicate values")
-    if h_level_set and (h_level_set[0] < 0 or h_level_set[-1] >= len(level_keys)):
-        raise ValueError("h_level_indexes contains out of range values")
-
-    v_level_set = SortedFrozenSet(v_level_indexes)
-    if len(v_level_indexes) != len(v_level_set):
-        raise ValueError("v_level_indexes contains duplicate values")
-    if v_level_set and v_level_set[0] < 0 or v_level_set[-1] >= len(level_keys):
-        raise ValueError("v_level_indexes contains out of range values")
-
-    all_levels = SortedFrozenSet(range(len(level_keys)))
-    unmentioned_levels = all_levels - v_level_set - h_level_set
-    if len(unmentioned_levels) > 0:
-        raise ValueError("v_level_indexes and h_level_indexes tabulate not include levels {}".format(', '.join(map(str, unmentioned_levels))))
-
-    if not h_level_set.isdisjoint(v_level_set):
-        raise ValueError("h_level_indexes and v_level_indexes are not disjoint")
+    v_key_sorted = make_sorter(v_level_sort_keys, v_level_indexes)
+    h_key_sorted = make_sorter(h_level_sort_keys, h_level_indexes)
 
     h_level_keys = [level_keys[level] for level in h_level_indexes]
     v_level_keys = [level_keys[level] for level in v_level_indexes]
 
-    h_key_tuples = list(product(*h_level_keys))  # Use sorted?
-    v_key_tuples = list(product(*v_level_keys))  # Use sorted?
+    h_key_tuples = h_key_sorted(product(*h_level_keys))
+    v_key_tuples = v_key_sorted(product(*v_level_keys))
 
     h_size = len(h_key_tuples)
     v_size = len(v_key_tuples)
@@ -107,6 +91,20 @@ def tabulate_body(obj, v_level_indexes, h_level_indexes):
                 table[v_index][h_index] = item
 
     return table, v_key_tuples, h_key_tuples
+
+
+def make_sorter(level_sort_keys, level_indexes):
+    if level_sort_keys is not None:
+        if len(level_sort_keys) != len(level_indexes):
+            raise ValueError(
+                "level_sort_keys with length {} does not correspond to level_indexes with length {}".format(
+                    len(level_sort_keys), len(level_indexes)))
+
+        def key_sorted(level_keys):
+            return tuplesorted(level_keys, *level_sort_keys)
+    else:
+        key_sorted = list
+    return key_sorted
 
 
 def strip_missing_rows(table, row_keys):
@@ -144,6 +142,8 @@ def size_h(rows_of_columns):
 def size_v(rows_of_columns):
     return sum(1 for row in rows_of_columns if len(row) != 0)
 
+def size(rows_of_columns):
+    return size_v(rows_of_columns), size_h(rows_of_columns)
 
 def transpose(rows_of_columns):
     return list(map(list, zip(*rows_of_columns)))
@@ -163,7 +163,6 @@ def assemble_table(table_body, v_key_tuples, h_key_tuples, empty=''):
         raise ValueError("table body and h_key_tuples have incompatible dimensions")
 
     num_stub_columns = size_h(v_key_tuples)
-    num_header_rows = size_v(h_key_tuples_transposed)
     table = []
 
     for h_key_row in h_key_tuples_transposed:
@@ -180,7 +179,15 @@ def assemble_table(table_body, v_key_tuples, h_key_tuples, empty=''):
     return table
 
 
-def tabulate(obj, v_level_indexes, h_level_indexes, v_level_visibility=None, h_level_visibility=None):
+def tabulate(
+        obj,
+        v_level_indexes=None,
+        h_level_indexes=None,
+        v_level_visibility=None,
+        h_level_visibility=None,
+        v_level_sort_keys=None,
+        h_level_sort_keys=None,
+        empty=''):
     """Render a nested data structure into a two-dimensional table.
 
     Args:
@@ -197,7 +204,11 @@ def tabulate(obj, v_level_indexes, h_level_indexes, v_level_visibility=None, h_l
             complete set of levels in the obj data structure. No
             level index should appear in both v_level_indexes and
             h_level_indexes, but all level indexes must appear in
-            either v_level_indexes or h_level_indexes.
+            either v_level_indexes or h_level_indexes. If None,
+            the levels not used in h_level_indexes will be used.
+            If both v_level_indexes and h_level_indexes are not
+            alternate indexes will be used as v_level and h_level
+            indexes.
 
         h_level_indexes: An iterable of the zero-based indexes of
             the levels for which the keys/indexes will be displayed
@@ -206,20 +217,35 @@ def tabulate(obj, v_level_indexes, h_level_indexes, v_level_visibility=None, h_l
             complete set of levels in the obj data structure. No
             level index should appear in both h_level_indexes and
             v_level_indexes, but all level indexes must appear in
-            either h_level_indexes or v_level_indexes.
+            either h_level_indexes or v_level_indexes. If None,
+            the levels not used in v_level_indexes will be used.
+            If both v_level_indexes and h_level_indexes are not
+            alternate indexes will be used as v_level and h_level
+            indexes.
 
-        v_level_visibility: An iterable of booleans, where each
+        v_level_visibility: An optional iterable of booleans, where each
             item corresponds to a level in v_level_indexes, and
             controls whether than level of index is included in
             the table stub columns. This iterable must contain
             the same number of items as v_level_indexes.
 
-        h_level_visibility: An iterable of booleans, where each
+        h_level_visibility: An optional iterable of booleans, where each
             item corresponds to a level in h_level_indexes, and
             controls whether than level of index is included in
             the table header rows. This iterable must contain
             the same number of items as h_level_indexes.
 
+        v_level_sort_keys: An optional iterable of Keys, where each
+            key corresponds to a level in v_level_indexes, and
+            controls how that key is sorted. If None, keys are sorted
+            as-is.
+
+        h_level_sort_keys: An optional iterable of Keys, where each
+            key corresponds to a level in v_level_indexes, and
+            controls how that key is sorted. If None, keys are sorted
+            as-is.
+
+        empty: An optional string value to use for empty cells.
 
     Returns:
         A list of lists representing the rows of cells.
@@ -229,18 +255,89 @@ def tabulate(obj, v_level_indexes, h_level_indexes, v_level_visibility=None, h_l
         tabulate(dict_of_dicts, [0, 1], [])
 
     """
-    v_level_indexes = list(v_level_indexes)
-    h_level_indexes = list(h_level_indexes)
+    level_keys = breadth_first(obj)
+
+    v_level_indexes, h_level_indexes = validate_level_indexes(len(level_keys), v_level_indexes, h_level_indexes)
+
     if v_level_visibility is None:
         v_level_visibility = [True] * len(v_level_indexes)
     if h_level_visibility is None:
         h_level_visibility = [True] * len(h_level_indexes)
-    table, v_key_tuples, h_key_tuples = tabulate_body(obj, v_level_indexes, h_level_indexes)
+
+    table, v_key_tuples, h_key_tuples = tabulate_body(
+        obj,
+        level_keys,
+        v_level_indexes,
+        h_level_indexes,
+        v_level_sort_keys,
+        h_level_sort_keys)
+
     table, v_key_tuples = strip_missing_rows(table, v_key_tuples)
     table, h_key_tuples = strip_missing_columns(table, h_key_tuples)
     v_key_tuples = strip_hidden(v_key_tuples, v_level_visibility)
     h_key_tuples = strip_hidden(h_key_tuples, h_level_visibility)
-    return assemble_table(table, v_key_tuples, h_key_tuples)
+    return assemble_table(table, v_key_tuples, h_key_tuples, empty)
+
+
+def validate_level_indexes(num_levels, v_level_indexes, h_level_indexes):
+    """Ensure that v_level_indexes and h_level_indexes are consistent.
+
+    Args:
+        num_levels: The number of levels of keys in the data structure being tabulated.
+        v_level_indexes: A sequence of level indexes between zero and num_levels for
+            the vertical axis, or None.
+        h_level_indexes: A sequence of level indexes between zero and num_levels for for
+            the horizontal axis, or None.
+
+    Returns:
+        A 2-tuple containing v_level_indexes and h_level_indexes sequences.
+
+    Raises:
+        ValueError: If v_level_indexes contains duplicate values.
+        ValueError: If h_level_indexes contains duplicate values.
+        ValueError: If v_level_indexes contains out of range values.
+        ValueError: If h_level_indexes contains out of range values.
+        ValueError: If taken together v_level_indexes and h_level_indexes
+            do not include all levels from zero to up to, but not including
+            num_levels.
+        ValueError: If v_level_indexes and h_level_indexes have items in
+            common.
+    """
+    if num_levels < 1:
+        raise ValueError("num_levels {} is less than one".format(num_levels))
+
+    all_levels = SortedFrozenSet(range(num_levels))
+
+    if (h_level_indexes is None) and (v_level_indexes is None):
+        v_level_indexes = range(0, num_levels, 2)
+        h_level_indexes = range(1, num_levels, 2)
+
+    h_level_set = SortedFrozenSet(h_level_indexes)
+    v_level_set = SortedFrozenSet(v_level_indexes)
+
+    if h_level_indexes is None:
+        h_level_indexes = all_levels - v_level_set
+    if v_level_indexes is None:
+        v_level_indexes = all_levels - h_level_set
+
+    if len(h_level_indexes) != len(h_level_set):
+        raise ValueError("h_level_indexes contains duplicate values")
+    if h_level_set and ((h_level_set[0] < 0) or (h_level_set[-1] >= num_levels)):
+        raise ValueError("h_level_indexes contains out of range values")
+    if len(v_level_indexes) != len(v_level_set):
+        raise ValueError("v_level_indexes contains duplicate values")
+    if v_level_set and ((v_level_set[0] < 0) or (v_level_set[-1] >= num_levels)):
+        raise ValueError("v_level_indexes contains out of range values")
+
+    unmentioned_levels = all_levels - v_level_set - h_level_set
+    if len(unmentioned_levels) > 0:
+        raise ValueError("v_level_indexes and h_level_indexes do not together include levels {}".format(
+            ', '.join(map(str, unmentioned_levels))))
+    if not h_level_set.isdisjoint(v_level_set):
+        raise ValueError("h_level_indexes and v_level_indexes are not disjoint")
+    v_level_indexes = list(v_level_indexes)
+    h_level_indexes = list(h_level_indexes)
+    return v_level_indexes, h_level_indexes
 
 
 def strip_hidden(key_tuples, visibilities):
@@ -261,57 +358,6 @@ def strip_hidden(key_tuples, visibilities):
         filtered_tuple = tuple(item for item, visible in zip(key_tuple, visibilities) if visible)
         result.append(filtered_tuple)
     return result
-
-a = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    [10, 11, 12],
-]
-
-b = [
-    [[5, 6], [1, 9], [3, 5]],
-    [[7, 2], [4], [5, 6]],
-    [[7, 8], [9, 3],],
-    [[1, 9], [2, 9], [3, 6]],
-]
-
-c = {
-    'alpha': 5,
-    'bravo': 5,
-    'charlie': 6,
-    'delta': 5,
-    'foxtrot': 6,
-    'golf': 4,
-}
-
-d = {
-    'alpha': "Fox base alpha".split(),
-    'bravo': "Rio bravo".split(),
-    'charlie': "Charlie says".split(),
-    'delta': "Concorde has a delta wing".split(),
-    'foxtrot': "The foxtrot was a popular dance".split(),
-    'golf': "Golf spoils a walk in the countryside".split(),
-}
-
-e = [
-    {'set': 3,
-     'pour': 4,
-     'serve': 5
-     },
-    {'serve': 19,
-     'set': 12,
-     'volley': 9
-     },
-    {'set': 98,
-     'pour': 1,
-     'cast': 14
-     },
-    {'cast': 34,
-     'line': 18,
-     'fish':8
-     }
-]
 
 # TODO: Multidimensional arrays. e.g. ndarray
 

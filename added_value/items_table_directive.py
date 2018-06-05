@@ -8,6 +8,7 @@ from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
 from added_value.non_string_iterable import NonStringIterable
+from added_value.tabulator import tabulate, is_rectangular, size
 from added_value.util import pad
 
 
@@ -24,7 +25,8 @@ class ItemsTableDirective(Directive):
         'header-rows': directives.nonnegative_int,
         'stub-columns': directives.nonnegative_int,
         'header': unchanged,
-        'transpose': flag,
+        'h_level_indexes': unchanged_required,
+        'v_level_indexes': unchanged_required,
         'show-row-index-with-base': int,
         'show-column-index-with-base': int,
         'cell-formats': unchanged_required,
@@ -44,6 +46,28 @@ class ItemsTableDirective(Directive):
     @property
     def stub_columns(self):
         return self.options.get('stub-columns', 0)
+
+    @property
+    def v_level_indexes(self):
+        text = self.options.get('v-level-indexes', '')
+        try:
+            items = map(int, filter(None, text.split(',')))
+            return items or None
+        except ValueError:
+            raise self.error(
+                "Could not interpret option v-level-indexes {!r}".format(text)
+            )
+
+    @property
+    def h_level_indexes(self):
+        text = self.options.get('h-level-indexes', '')
+        try:
+            items = map(int, filter(None, text.split(',')))
+            return items or None
+        except ValueError:
+            raise self.error(
+                "Could not interpret option h-level-indexes {!r}".format(text)
+            )
 
     def get_column_widths(self, max_cols):
         if isinstance(self.widths, list):
@@ -74,8 +98,7 @@ class ItemsTableDirective(Directive):
             max_header_cols = len(header_row)
         return table_head, max_header_cols
 
-    @staticmethod
-    def interpret_obj(obj):
+    def interpret_obj(self, obj, v_level_indexes, h_level_indexes):
         """Interpret the given Python object as a table.
 
         Args:
@@ -87,44 +110,13 @@ class ItemsTableDirective(Directive):
         Raises:
             TypeError: If the type couldn't be interpreted as a table.
         """
-        if isinstance(obj, list):
-            max_cols, rows = ItemsTableDirective.interpret_list(obj)
-        elif isinstance(obj, Mapping):
-            max_cols, rows = ItemsTableDirective.interpret_dict(obj)
-        else:
-            # TODO: We can tabulate fancy stuff like dicts of dicts later!
-            raise TypeError("Unsupported Python object {!r} for tables.")
+        if not isinstance(obj, NonStringIterable):
+             raise self.error("Cannot make a table from object {!r}".format(obj))
 
-        rectangular_rows = [list(pad(row, max_cols, '')) for row in rows]
-
-        return rectangular_rows, max_cols
-
-    @staticmethod
-    def make_row(obj_row):
-        return list(obj_row) if isinstance(obj_row, NonStringIterable) else [obj_row]
-
-    @staticmethod
-    def interpret_list(obj):
-        """This should handle a list items and of a list of lists of items."""
-        rows = []
-        max_cols = 0
-        for obj_row in obj:
-            row = ItemsTableDirective.make_row(obj_row)
-            max_cols = max(max_cols, len(row))
-            rows.append(row)
-        return max_cols, rows
-
-    @staticmethod
-    def interpret_dict(obj):
-        """This should handle a dictionary of items and a dictionary of lists of items."""
-        rows = []
-        max_cols = 0
-        for key, value in obj.items():
-            row = [key]
-            row.extend(ItemsTableDirective.make_row(value))
-            max_cols = max(max_cols, len(row))
-            rows.append(row)
-        return max_cols, rows
+        rectangular_rows = tabulate(obj, v_level_indexes, h_level_indexes)
+        assert is_rectangular(rectangular_rows)
+        num_rows, num_cols = size(rectangular_rows)
+        return rectangular_rows, num_cols
 
     def augment_cells(self, rows, source):
         """Convert each cell into a tuple suitable for consumption by build_table.
@@ -143,9 +135,9 @@ class ItemsTableDirective(Directive):
             prefixed_name, obj, parent, modname = import_by_name(obj_name)
         except ImportError:
             raise self.error(
-                "Could not locate Python object {}. ({} directive).".format(obj_name, self.name))
+                "Could not locate Python object {} ({} directive).".format(obj_name, self.name))
         table_head, max_header_cols = self.process_header_option()
-        rows, max_cols = self.interpret_obj(obj)
+        rows, max_cols = self.interpret_obj(obj, self.v_level_indexes, self.h_level_indexes)
         max_cols = max(max_cols, max_header_cols)
         col_widths = self.get_column_widths(max_cols)
         table_head.extend(rows[:self.header_rows])

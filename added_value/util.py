@@ -1,4 +1,4 @@
-from itertools import chain, repeat, islice
+from itertools import chain, repeat, islice, izip_longest
 
 
 def pad_infinite(iterable, padding=None):

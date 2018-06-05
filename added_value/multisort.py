@@ -38,3 +38,10 @@ def multisorted(items, *keys):
     for key in reversed(keys):
         items = sorted(items, key=key.func, reverse=key.reverse)
     return items
+
+def tuplesorted(items, *keys):
+    # Transform the keys so each works on one item of the tuple
+    tuple_keys = [Key(func=lambda t, i=index: key.func(t[i]),
+                      reverse=key.reverse)
+                  for index, key in enumerate(keys)]
+    return multisorted(items, *tuple_keys)
