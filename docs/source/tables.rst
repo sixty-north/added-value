@@ -45,3 +45,9 @@ To get a predictable order, use an ordered mapping collection, such as an ``Orde
    :lines: 28-41
 
 .. items-table:: cal.ordered_month_lengths
+
+Table from a dictionary of dictionaries
+=======================================
+
+.. items-table:: opcodes.OPCODES
+
