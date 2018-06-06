@@ -9,6 +9,7 @@ from added_value.items_table_directive import NonStringIterable
 from added_value.multisort import tuplesorted
 from added_value.sorted_frozen_set import SortedFrozenSet
 from added_value.toposort import topological_sort
+from added_value.util import pairwise_longest
 
 depth_marker = object()
 ROOT = object()
@@ -16,18 +17,31 @@ LEAF = object()
 
 _UNSET = object()
 
+_FILL = object()
+
 class TopoSet:
+    """A topologically sorted set."""
 
     def __init__(self):
         self._first = _UNSET
         self._edges = []
 
     def update(self, iterable):
-        for pair in pairwise(iterable):
-            source, _ = pair
+        """Update with an ordered iterable of items.
+
+        Args:
+            iterable: An ordered iterable of items. The relative
+               order of the items in this iterable will be respected
+               in the TopoSet (in the absence of cycles).
+        """
+        for pair in pairwise_longest(iterable, fillvalue=_FILL):
+            source, target = pair
             if self._first is _UNSET:
                 self._first = source
-            self._edges.append(pair)
+            if target is _FILL:
+                self.add(source)
+            else:
+                self._edges.append(pair)
 
     def add(self, item):
         if self._first is _UNSET:
@@ -56,7 +70,7 @@ def breadth_first(obj, leaves=False):
     queue.append(obj)
     queue.append(None)
     level_keys = []
-    current_level_keys = TopoSet()  # This unordered set causes random mixing of keys - fix with something smarter
+    current_level_keys = TopoSet()
     while len(queue) > 0:
         node = queue.popleft()
         if node is None:
@@ -79,7 +93,7 @@ def breadth_first(obj, leaves=False):
             if leaves:
                 current_level_keys.add(node)
 
-    return [list(s) for s in level_keys[:-1]] # Why the slice? Remove leaves?
+    return [list(s) for s in level_keys[:-1]] # Why the slice? Remove leaves? Is the last always empty?
 
 class Missing(object):
 
