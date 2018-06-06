@@ -3,27 +3,65 @@ from itertools import count, chain, product
 
 import operator
 
-from more_itertools import grouper
+from more_itertools import grouper, pairwise
 
 from added_value.items_table_directive import NonStringIterable
 from added_value.multisort import tuplesorted
 from added_value.sorted_frozen_set import SortedFrozenSet
+from added_value.toposort import topological_sort
 
 depth_marker = object()
 ROOT = object()
 LEAF = object()
+
+_UNSET = object()
+
+class TopoSet:
+
+    def __init__(self):
+        self._first = _UNSET
+        self._edges = []
+
+    def update(self, iterable):
+        for pair in pairwise(iterable):
+            source, _ = pair
+            if self._first is _UNSET:
+                self._first = source
+            self._edges.append(pair)
+
+    def add(self, item):
+        if self._first is _UNSET:
+            self._first = item
+        elif len(self._edges) == 0:
+            self._edges.append((self._first, item))
+        else:
+            _, previous_target = self._edges[-1]
+            self._edges.append((previous_target, item))
+
+    def __iter__(self):
+        if self._first is _UNSET:
+            return
+        elif len(self._edges) == 0:
+            yield self._first
+        else:
+            results = topological_sort(self._edges)
+            for item in results.sorted:
+                yield item
+            for item in results.cyclic:
+                yield item
+
 
 def breadth_first(obj, leaves=False):
     queue = deque()
     queue.append(obj)
     queue.append(None)
     level_keys = []
-    current_level_keys = set()
+    current_level_keys = TopoSet()  # This unordered set causes random mixing of keys - fix with something smarter
     while len(queue) > 0:
         node = queue.popleft()
         if node is None:
             level_keys.append(current_level_keys)
-            current_level_keys = set()
+            current_level_keys = TopoSet()
             queue.append(None)
             if queue[0] is None:
                 break
@@ -40,7 +78,8 @@ def breadth_first(obj, leaves=False):
         else:
             if leaves:
                 current_level_keys.add(node)
-    return level_keys[:-1]
+
+    return [list(s) for s in level_keys[:-1]] # Why the slice? Remove leaves?
 
 class Missing(object):
 
