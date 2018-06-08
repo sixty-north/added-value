@@ -1,68 +1,16 @@
 from collections import Mapping, deque
-from itertools import count, chain, product
-
-import operator
-
-from more_itertools import grouper, pairwise
+from itertools import product
 
 from added_value.items_table_directive import NonStringIterable
 from added_value.multisort import tuplesorted
 from added_value.sorted_frozen_set import SortedFrozenSet
-from added_value.toposort import topological_sort
-from added_value.util import pairwise_longest
+from added_value.toposet import TopoSet
 
 depth_marker = object()
 ROOT = object()
 LEAF = object()
 
 _UNSET = object()
-
-_FILL = object()
-
-class TopoSet:
-    """A topologically sorted set."""
-
-    def __init__(self):
-        self._first = _UNSET
-        self._edges = []
-
-    def update(self, iterable):
-        """Update with an ordered iterable of items.
-
-        Args:
-            iterable: An ordered iterable of items. The relative
-               order of the items in this iterable will be respected
-               in the TopoSet (in the absence of cycles).
-        """
-        for pair in pairwise_longest(iterable, fillvalue=_FILL):
-            source, target = pair
-            if self._first is _UNSET:
-                self._first = source
-            if target is _FILL:
-                self.add(source)
-            else:
-                self._edges.append(pair)
-
-    def add(self, item):
-        if self._first is _UNSET:
-            self._first = item
-        elif len(self._edges) == 0:
-            self._edges.append((self._first, item))
-        else:
-            _, previous_target = self._edges[-1]
-            self._edges.append((previous_target, item))
-
-    def __iter__(self):
-        if self._first is _UNSET:
-            return
-        elif len(self._edges) == 0:
-            yield self._first
-        else:
-            results = topological_sort(self._edges)
-            for item in results.sorted:
-                yield item
-            for item in results.cyclic:
-                yield item
 
 
 def breadth_first(obj, leaves=False):
