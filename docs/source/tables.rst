@@ -46,8 +46,72 @@ To get a predictable order, use an ordered mapping collection, such as an ``Orde
 
 .. items-table:: cal.ordered_month_lengths
 
+Table from a dictionary with title
+==================================
+
+.. items-table:: cal.month_lengths
+   :title: Month length in days
+
+Table from a dictionary with header
+===================================
+
+.. items-table:: cal.month_lengths
+   :header: Month, Length
+
+
 Table from a dictionary of dictionaries
 =======================================
 
 .. items-table:: opcodes.OPCODES
 
+
+Table from a dictionary of dictionaries with transposition
+==========================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-indexes: 1
+   :h-level-indexes: 0
+
+
+Table from a dictionary of dictionaries with transposition
+==========================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-indexes: 1
+   :h-level-indexes: 0
+
+Table from a dictionary of dictionaries with descending sort on vertical axis
+=============================================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-sort-orders: dec
+
+Table from a dictionary of dictionaries with ascending sort on horizontal axis
+==============================================================================
+
+.. items-table:: opcodes.OPCODES
+   :h-level-sort-orders: asc
+
+Table from a dictionary of dictionaries with both levels on vertical axis
+=========================================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-indexes: 0, 1
+   :v-level-sort-orders: asc, as-is
+
+Table from a dictionary of dictionaries with both levels on vertical axis with two stub columns
+===============================================================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-indexes: 0, 1
+   :v-level-sort-orders: asc, as-is
+   :stub-columns: 2
+
+Table from a dictionary of dictionaries with ascending sort on horizontal axis and one header row and one stub column
+=====================================================================================================================
+
+.. items-table:: opcodes.OPCODES
+   :h-level-sort-orders: asc
+   :header-rows: 1
+   :stub-columns: 1
+   :widths:

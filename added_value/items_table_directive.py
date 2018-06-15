@@ -1,16 +1,36 @@
-import csv
-from collections import Mapping
+from __future__ import division
 
+import csv
+
+import natsort
 from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import flag, unchanged_required, unchanged
 from docutils.statemachine import StringList
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
+from added_value.multisort import asc, dec, as_is
 from added_value.non_string_iterable import NonStringIterable
 from added_value.tabulator import tabulate, is_rectangular, size
-from added_value.util import pad
 
+CELL_FORMATS_OPTION = 'cell-formats'
+HEADER_OPTION = 'header'
+STUB_COLUMNS_OPTION = 'stub-columns'
+HEADER_ROWS_OPTION = 'header-rows'
+WIDTHS_OPTION = 'widths'
+TITLE_OPTION = 'title'
+V_LEVEL_SORT_ORDERS_OPTION = 'v-level-sort-orders'
+H_LEVEL_SORT_ORDERS_OPTION = 'h-level-sort-orders'
+V_LEVEL_INDEXES_OPTION = 'v-level-indexes'
+H_LEVEL_INDEXES_OPTION = 'h-level-indexes'
+
+_natural = natsort.natsort_keygen()
+
+SORT_ORDERS = {
+    'asc': asc(_natural),
+    'dec': dec(_natural),
+    'as-is': as_is(),
+}
 
 class ItemsTableDirective(Directive):
     """Format a sequence as a table.
@@ -21,52 +41,88 @@ class ItemsTableDirective(Directive):
     required_arguments = 1
     has_content = False
     option_spec = {
-        'title': unchanged_required,
-        'header-rows': directives.nonnegative_int,
-        'stub-columns': directives.nonnegative_int,
-        'header': unchanged,
-        'h_level_indexes': unchanged_required,
-        'v_level_indexes': unchanged_required,
-        'show-row-index-with-base': int,
-        'show-column-index-with-base': int,
-        'cell-formats': unchanged_required,
-        'widths': directives.value_or(
+        TITLE_OPTION: unchanged_required,
+        HEADER_ROWS_OPTION: directives.nonnegative_int,
+        STUB_COLUMNS_OPTION: directives.nonnegative_int,
+        HEADER_OPTION: unchanged,
+        H_LEVEL_INDEXES_OPTION: unchanged_required,
+        V_LEVEL_INDEXES_OPTION: unchanged_required,
+        H_LEVEL_SORT_ORDERS_OPTION: unchanged,
+        V_LEVEL_SORT_ORDERS_OPTION: unchanged,
+        CELL_FORMATS_OPTION: unchanged_required,
+        WIDTHS_OPTION: directives.value_or(
             ('auto', 'grid'),
             directives.positive_int_list)
     }
 
     @property
     def widths(self):
-        return self.options.get('widths', '')
+        return self.options.get(WIDTHS_OPTION, '')
 
     @property
     def header_rows(self):
-        return self.options.get('header-rows', 0)
+        return self.options.get(HEADER_ROWS_OPTION, 0)
 
     @property
     def stub_columns(self):
-        return self.options.get('stub-columns', 0)
+        return self.options.get(STUB_COLUMNS_OPTION, 0)
 
     @property
     def v_level_indexes(self):
-        text = self.options.get('v-level-indexes', '')
+        text = self.options.get(V_LEVEL_INDEXES_OPTION, '')
         try:
             items = map(int, filter(None, text.split(',')))
-            return items or None
         except ValueError:
             raise self.error(
-                "Could not interpret option v-level-indexes {!r}".format(text)
+                "Could not interpret option {} {!r}".format(V_LEVEL_INDEXES_OPTION, text)
             )
+        return items or None
 
     @property
     def h_level_indexes(self):
-        text = self.options.get('h-level-indexes', '')
+        text = self.options.get(H_LEVEL_INDEXES_OPTION, '')
         try:
             items = map(int, filter(None, text.split(',')))
-            return items or None
         except ValueError:
             raise self.error(
-                "Could not interpret option h-level-indexes {!r}".format(text)
+                "Could not interpret option {} {!r}".format(H_LEVEL_INDEXES_OPTION, text)
+            )
+        return items or None
+
+    @property
+    def v_level_sort_orders(self):
+        text = self.options.get(V_LEVEL_SORT_ORDERS_OPTION, '')
+        try:
+            orders = map(lambda s: s.strip(), filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(V_LEVEL_SORT_ORDERS_OPTION, text)
+            )
+        if not orders:
+            return None
+        try:
+            return [SORT_ORDERS[order] for order in orders]
+        except KeyError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(V_LEVEL_SORT_ORDERS_OPTION, text)
+            )
+
+    @property
+    def h_level_sort_orders(self):
+        text = self.options.get(H_LEVEL_SORT_ORDERS_OPTION, '')
+        try:
+            orders = map(lambda s: s.strip(), filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(H_LEVEL_SORT_ORDERS_OPTION, text)
+            )
+        if not orders:
+            return None
+        try:
+            return [SORT_ORDERS[order] for order in orders]
+        except KeyError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(H_LEVEL_SORT_ORDERS_OPTION, text)
             )
 
     def get_column_widths(self, max_cols):
@@ -77,7 +133,7 @@ class ItemsTableDirective(Directive):
                         .format(self.widths, max_cols, self.name))
             col_widths = self.widths
         elif max_cols:
-            col_widths = [100 // max_cols] * max_cols
+            col_widths = [100.0 / max_cols] * max_cols
         else:
             raise self.error(
                 "Something went wrong calculating column widths. ({} directive).".format(self.name)
@@ -87,9 +143,9 @@ class ItemsTableDirective(Directive):
     def process_header_option(self):
         table_head = []
         max_header_cols = 0
-        if 'header' in self.options:
+        if HEADER_OPTION in self.options:
             # TODO: Have the option for this to be a Python object too.
-            header = self.options['header']
+            header = self.options[HEADER_OPTION]
             header_stream = StringIO(header)
             reader = csv.reader(header_stream, delimiter=',', quotechar='"')
             header_row = next(reader)
@@ -98,7 +154,11 @@ class ItemsTableDirective(Directive):
             max_header_cols = len(header_row)
         return table_head, max_header_cols
 
-    def interpret_obj(self, obj, v_level_indexes, h_level_indexes):
+    def interpret_obj(self, obj,
+                      v_level_indexes,
+                      h_level_indexes,
+                      v_level_sort_keys,
+                      h_level_sort_keys):
         """Interpret the given Python object as a table.
 
         Args:
@@ -113,7 +173,14 @@ class ItemsTableDirective(Directive):
         if not isinstance(obj, NonStringIterable):
              raise self.error("Cannot make a table from object {!r}".format(obj))
 
-        rectangular_rows = tabulate(obj, v_level_indexes, h_level_indexes)
+        # TODO: Visibility args
+        rectangular_rows = tabulate(
+            obj,
+            v_level_indexes=v_level_indexes,
+            h_level_indexes=h_level_indexes,
+            v_level_sort_keys=v_level_sort_keys,
+            h_level_sort_keys=h_level_sort_keys
+        )
         assert is_rectangular(rectangular_rows)
         num_rows, num_cols = size(rectangular_rows)
         return rectangular_rows, num_cols
@@ -137,7 +204,13 @@ class ItemsTableDirective(Directive):
             raise self.error(
                 "Could not locate Python object {} ({} directive).".format(obj_name, self.name))
         table_head, max_header_cols = self.process_header_option()
-        rows, max_cols = self.interpret_obj(obj, self.v_level_indexes, self.h_level_indexes)
+        rows, max_cols = self.interpret_obj(
+            obj,
+            self.v_level_indexes,
+            self.h_level_indexes,
+            self.v_level_sort_orders,
+            self.h_level_sort_orders
+        )
         max_cols = max(max_cols, max_header_cols)
         col_widths = self.get_column_widths(max_cols)
         table_head.extend(rows[:self.header_rows])
