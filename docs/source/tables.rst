@@ -114,4 +114,12 @@ Table from a dictionary of dictionaries with ascending sort on horizontal axis a
    :h-level-sort-orders: asc
    :header-rows: 1
    :stub-columns: 1
-   :widths:
+
+
+Table from a dictionary of dictionaries with both levels on vertical axis
+=========================================================================
+
+.. items-table:: opcodes.OPCODES
+   :v-level-indexes: 0, 1
+   :v-level-sort-orders: asc, as-is
+   :v-level-visibility: show, show

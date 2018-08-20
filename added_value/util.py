@@ -21,3 +21,6 @@ def pairwise_longest(iterable, fillvalue=None):
     a, b = tee(iterable)
     next(b, None)
     return izip_longest(a, b, fillvalue=fillvalue)
+
+def is_sorted(iterable, key=lambda x: x):
+    return all(a <= b for a, b in pairwise((key(item) for item in iterable)))
