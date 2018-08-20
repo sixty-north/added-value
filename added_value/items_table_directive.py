@@ -21,6 +21,8 @@ WIDTHS_OPTION = 'widths'
 TITLE_OPTION = 'title'
 V_LEVEL_SORT_ORDERS_OPTION = 'v-level-sort-orders'
 H_LEVEL_SORT_ORDERS_OPTION = 'h-level-sort-orders'
+V_LEVEL_VISIBILITY_OPTION = 'v-level-visibility'
+H_LEVEL_VISIBILITY_OPTION = 'h-level-visibility'
 V_LEVEL_INDEXES_OPTION = 'v-level-indexes'
 H_LEVEL_INDEXES_OPTION = 'h-level-indexes'
 
@@ -30,6 +32,11 @@ SORT_ORDERS = {
     'asc': asc(_natural),
     'dec': dec(_natural),
     'as-is': as_is(),
+}
+
+VISIBILITIES = {
+    'show': True,
+    'hide': False,
 }
 
 class ItemsTableDirective(Directive):
@@ -47,6 +54,8 @@ class ItemsTableDirective(Directive):
         HEADER_OPTION: unchanged,
         H_LEVEL_INDEXES_OPTION: unchanged_required,
         V_LEVEL_INDEXES_OPTION: unchanged_required,
+        H_LEVEL_VISIBILITY_OPTION: unchanged,
+        V_LEVEL_VISIBILITY_OPTION: unchanged,
         H_LEVEL_SORT_ORDERS_OPTION: unchanged,
         V_LEVEL_SORT_ORDERS_OPTION: unchanged,
         CELL_FORMATS_OPTION: unchanged_required,
@@ -90,6 +99,50 @@ class ItemsTableDirective(Directive):
         return items or None
 
     @property
+    def v_level_visibility(self):
+        text = self.options.get(V_LEVEL_VISIBILITY_OPTION, '')
+        try:
+            visibilities = map(lambda s: s.strip().lower(), filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(V_LEVEL_VISIBILITY_OPTION, text)
+            )
+        if not visibilities:
+            return None
+        try:
+            return [VISIBILITIES[visibility] for visibility in visibilities]
+        except KeyError:
+            raise self.error(
+                "Could not interpret option {} {!r}. Items must each be one of {}".format(
+                    V_LEVEL_VISIBILITY_OPTION,
+                    text,
+                    VISIBILITIES
+                )
+            )
+
+    @property
+    def h_level_visibility(self):
+        text = self.options.get(H_LEVEL_VISIBILITY_OPTION, '')
+        try:
+            visibilities = map(lambda s: s.strip().lower(), filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(H_LEVEL_VISIBILITY_OPTION, text)
+            )
+        if not visibilities:
+            return None
+        try:
+            return [VISIBILITIES[visibility] for visibility in visibilities]
+        except KeyError:
+            raise self.error(
+                "Could not interpret option {} {!r}. Items must each be one of {}".format(
+                    H_LEVEL_VISIBILITY_OPTION,
+                    text,
+                    VISIBILITIES
+                )
+            )
+
+    @property
     def v_level_sort_orders(self):
         text = self.options.get(V_LEVEL_SORT_ORDERS_OPTION, '')
         try:
@@ -104,7 +157,11 @@ class ItemsTableDirective(Directive):
             return [SORT_ORDERS[order] for order in orders]
         except KeyError:
             raise self.error(
-                "Could not interpret option {} {!r}".format(V_LEVEL_SORT_ORDERS_OPTION, text)
+                "Could not interpret option {} {!r}. Items must each be one of {}".format(
+                    V_LEVEL_SORT_ORDERS_OPTION,
+                    text,
+                    ', '.join(SORT_ORDERS.keys())
+                )
             )
 
     @property
@@ -122,7 +179,11 @@ class ItemsTableDirective(Directive):
             return [SORT_ORDERS[order] for order in orders]
         except KeyError:
             raise self.error(
-                "Could not interpret option {} {!r}".format(H_LEVEL_SORT_ORDERS_OPTION, text)
+                "Could not interpret option {} {!r}. Items must each be one of {}".format(
+                    H_LEVEL_SORT_ORDERS_OPTION,
+                    text,
+                    ', '.join(SORT_ORDERS.keys())
+                )
             )
 
     def get_column_widths(self, max_cols):
@@ -157,6 +218,8 @@ class ItemsTableDirective(Directive):
     def interpret_obj(self, obj,
                       v_level_indexes,
                       h_level_indexes,
+                      v_level_visibility,
+                      h_level_visibility,
                       v_level_sort_keys,
                       h_level_sort_keys):
         """Interpret the given Python object as a table.
@@ -178,6 +241,8 @@ class ItemsTableDirective(Directive):
             obj,
             v_level_indexes=v_level_indexes,
             h_level_indexes=h_level_indexes,
+            v_level_visibility=v_level_visibility,
+            h_level_visibility=h_level_visibility,
             v_level_sort_keys=v_level_sort_keys,
             h_level_sort_keys=h_level_sort_keys
         )
@@ -208,6 +273,8 @@ class ItemsTableDirective(Directive):
             obj,
             self.v_level_indexes,
             self.h_level_indexes,
+            self.v_level_visibility,
+            self.h_level_visibility,
             self.v_level_sort_orders,
             self.h_level_sort_orders
         )
