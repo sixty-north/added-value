@@ -1,4 +1,4 @@
-from added_value.multisort import multisorted, asc, dec, asis
+from added_value.multisort import multisorted, asc, dec, as_is
 
 
 def test_multisort_with_default_key():
@@ -32,6 +32,7 @@ def test_multisort_with_specified_multiple_keys():
     m = multisorted(items, asc(len), dec())
     assert m == s
 
+
 def test_multisort_with_as_is_preserves_order():
     items = ["Hello",
              "Hotel",
@@ -44,5 +45,5 @@ def test_multisort_with_as_is_preserves_order():
              "Archway",
              "Arcuate",
              "Amazed"]
-    m = multisorted(items, asis())
+    m = multisorted(items, as_is())
     assert m == items
