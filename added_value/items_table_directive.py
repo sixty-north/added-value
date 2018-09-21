@@ -19,6 +19,8 @@ STUB_COLUMNS_OPTION = 'stub-columns'
 HEADER_ROWS_OPTION = 'header-rows'
 WIDTHS_OPTION = 'widths'
 TITLE_OPTION = 'title'
+H_LEVEL_TITLES_OPTION = 'h-level-titles'
+V_LEVEL_TITLES_OPTION = 'v-level-titles'
 V_LEVEL_SORT_ORDERS_OPTION = 'v-level-sort-orders'
 H_LEVEL_SORT_ORDERS_OPTION = 'h-level-sort-orders'
 V_LEVEL_VISIBILITY_OPTION = 'v-level-visibility'
@@ -52,6 +54,8 @@ class ItemsTableDirective(Directive):
         HEADER_ROWS_OPTION: directives.nonnegative_int,
         STUB_COLUMNS_OPTION: directives.nonnegative_int,
         HEADER_OPTION: unchanged,
+        H_LEVEL_TITLES_OPTION: unchanged,
+        V_LEVEL_TITLES_OPTION: unchanged,
         H_LEVEL_INDEXES_OPTION: unchanged_required,
         V_LEVEL_INDEXES_OPTION: unchanged_required,
         H_LEVEL_VISIBILITY_OPTION: unchanged,
@@ -75,6 +79,28 @@ class ItemsTableDirective(Directive):
     @property
     def stub_columns(self):
         return self.options.get(STUB_COLUMNS_OPTION, 0)
+
+    @property
+    def v_level_titles(self):
+        text = self.options.get(V_LEVEL_TITLES_OPTION, '')
+        try:
+            items = map(int, filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(V_LEVEL_TITLES_OPTION, text)
+            )
+        return items or None
+
+    @property
+    def h_level_titles(self):
+        text = self.options.get(H_LEVEL_TITLES_OPTION, '')
+        try:
+            items = map(int, filter(None, text.split(',')))
+        except ValueError:
+            raise self.error(
+                "Could not interpret option {} {!r}".format(H_LEVEL_TITLES_OPTION, text)
+            )
+        return items or None
 
     @property
     def v_level_indexes(self):

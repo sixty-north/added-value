@@ -123,3 +123,18 @@ Table from a dictionary of dictionaries with both levels on vertical axis
    :v-level-indexes: 0, 1
    :v-level-sort-orders: asc, as-is
    :v-level-visibility: show, show
+
+
+Table from a stress table
+=========================
+
+.. items-table:: steel.en13445_docs
+   :title: EN 13445 Material Stresses
+   :header-rows: 1
+   :stub-columns: 1
+   :v-level-indexes: 0
+   :h-level-indexes: 1
+   :v-level-titles: Materials
+   :h-level-titles: Temperatures C
+   :v-level-sort-orders: asc
+   :h-level-sort-orders: asc

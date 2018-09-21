@@ -32,8 +32,10 @@ def read_version():
     return (local_vars['__version__'], local_vars['__version_info__'])
 
 install_requires = [
+    'docutils',
     'sphinx',
     'natsort',
+    'six',
 ]
 
 
