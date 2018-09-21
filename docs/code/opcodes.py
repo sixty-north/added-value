@@ -22,6 +22,11 @@ class Mnemonic(object):
     def __repr__(self):
         return "{}({})".format(self.__class__.__name__, self._mnemonic)
 
+    def __lt__(self, rhs):
+        if not isinstance(rhs, Mnemonic):
+            return NotImplemented
+        return self._mnemonic < rhs._mnemonic
+
 
 
 ABX = Mnemonic('ABX')

@@ -84,7 +84,7 @@ class ItemsTableDirective(Directive):
     def v_level_titles(self):
         text = self.options.get(V_LEVEL_TITLES_OPTION, '')
         try:
-            items = map(int, filter(None, text.split(',')))
+            items = list(map(int, filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_TITLES_OPTION, text)
@@ -95,7 +95,7 @@ class ItemsTableDirective(Directive):
     def h_level_titles(self):
         text = self.options.get(H_LEVEL_TITLES_OPTION, '')
         try:
-            items = map(int, filter(None, text.split(',')))
+            items = list(map(int, filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_TITLES_OPTION, text)
@@ -106,7 +106,7 @@ class ItemsTableDirective(Directive):
     def v_level_indexes(self):
         text = self.options.get(V_LEVEL_INDEXES_OPTION, '')
         try:
-            items = map(int, filter(None, text.split(',')))
+            items = list(map(int, filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_INDEXES_OPTION, text)
@@ -117,7 +117,7 @@ class ItemsTableDirective(Directive):
     def h_level_indexes(self):
         text = self.options.get(H_LEVEL_INDEXES_OPTION, '')
         try:
-            items = map(int, filter(None, text.split(',')))
+            items = list(map(int, filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_INDEXES_OPTION, text)
@@ -128,7 +128,7 @@ class ItemsTableDirective(Directive):
     def v_level_visibility(self):
         text = self.options.get(V_LEVEL_VISIBILITY_OPTION, '')
         try:
-            visibilities = map(lambda s: s.strip().lower(), filter(None, text.split(',')))
+            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_VISIBILITY_OPTION, text)
@@ -150,7 +150,7 @@ class ItemsTableDirective(Directive):
     def h_level_visibility(self):
         text = self.options.get(H_LEVEL_VISIBILITY_OPTION, '')
         try:
-            visibilities = map(lambda s: s.strip().lower(), filter(None, text.split(',')))
+            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_VISIBILITY_OPTION, text)
@@ -172,7 +172,7 @@ class ItemsTableDirective(Directive):
     def v_level_sort_orders(self):
         text = self.options.get(V_LEVEL_SORT_ORDERS_OPTION, '')
         try:
-            orders = map(lambda s: s.strip(), filter(None, text.split(',')))
+            orders = list(map(lambda s: s.strip(), filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_SORT_ORDERS_OPTION, text)
@@ -194,7 +194,7 @@ class ItemsTableDirective(Directive):
     def h_level_sort_orders(self):
         text = self.options.get(H_LEVEL_SORT_ORDERS_OPTION, '')
         try:
-            orders = map(lambda s: s.strip(), filter(None, text.split(',')))
+            orders = list(map(lambda s: s.strip(), filter(None, text.split(','))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_SORT_ORDERS_OPTION, text)
@@ -282,6 +282,7 @@ class ItemsTableDirective(Directive):
         I think this has to tabulate with cell spans, but I'm not sure, and we don't need it.
         """
         # TODO: Hardwired str transform.
+        # 4-tuple: morerows, morecols, offset, cellblock
         return [[(0, 0, 0, StringList(str(cell).splitlines(), source=source))
                  for cell in row] for row in rows]
 

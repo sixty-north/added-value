@@ -29,7 +29,9 @@ def dec(func=identity):
     return Key(func, reverse=True)
 
 
-_as_is = Key(func=lambda x: None)
+# Returns the same key value for all x, so
+# stable sort will maintain order.
+_as_is = Key(func=lambda x: 0)
 
 
 def as_is():
