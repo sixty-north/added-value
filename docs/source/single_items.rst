@@ -1,6 +1,12 @@
-=====================
-Embedded Single Items
-=====================
+======================
+Embedding Single Items
+======================
+
+For the examples below, assume the existence of a Python module called ``elements`` with the
+following contents:
+
+.. literalinclude:: ../code/elements.py
+   :lines: 1-4
 
 Role: str – embed the string conversion of an object
 ----------------------------------------------------

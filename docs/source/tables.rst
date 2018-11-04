@@ -2,170 +2,79 @@
 Tables
 ======
 
-Standard table
-==============
+Directive: items-table - embed sequences and mappings as tables
+===============================================================
 
-+-----------+------------+------------+----------+----------+
-| Column    | Header     | Header 2   | Header 3 | Header 4 |
-| Title     | Title      |            |          |          |
-+===========+============+============+==========+==========+
-| body row 1, column 1   | column 2   | column 3 | column 4 |
-+------------------------+------------+----------+----------+
-| body row 2             | Cells may span columns.          |
-+------------------------+------------+---------------------+
-| body row 3             | Cells may  | - Table cells       |
-+------------------------+ span rows. | - contain           |
-| body row 4             |            | - body elements.    |
-+------------------------+------------+---------------------+
+Added value includes powerful facilities for creating tabular presentations of single- and
+multi-dimensional data structures, such as lists of lists and lists of dictionaries. We'll start
+with a few basic examples of the ``items-table::` directive, before explaining all various
+configuration options.
 
+Basic Examples
+--------------
 
-+------------------------+------------+----------+----------+
-| Header row, column 1   | Header 2   | Header 3 | Header 4 |
-| (header rows optional) |            |          |          |
-+========================+============+==========+==========+
-| body row 1, column 1   | column 2   | column 3 | column 4 |
-+------------------------+------------+----------+----------+
-| body row 2             | Cells may span columns.          |
-+------------------------+------------+---------------------+
-| body row 3             | Cells may  | - Table cells       |
-+------------------------+ span rows. | - contain           |
-| body row 4             |            | - body elements.    |
-+------------------------+------------+---------------------+
+Table from a list
+~~~~~~~~~~~~~~~~~
 
-
-Table from list
-===============
-
-Here is an example table made from a list:
+Python sequences, such as a lists, can be represented as tables. Consider the following Python
+data structure, which is a list of strings containing the names of the days of the week:
 
 .. literalinclude:: ../code/cal.py
    :language: python
-   :lines: 1
+   :lines: 3
+
+This is how we would refer to that table using an ``items-table::`` directive:
+
+::
+
+  .. items-table:: cal.days_of_the_week
+
+which will be rendered like this:
 
 .. items-table:: cal.days_of_the_week
 
-
-Table from list of lists
-========================
-
-Here is an example table made from a list of lists:
-
-.. literalinclude:: ../code/cal.py
-   :language: python
-   :lines: 3-9
-
-.. items-table:: cal.month_of_weeks
+Notice that the list indexes are included in the table data.
 
 
 Table from a dictionary
-=======================
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Python mappings, such as a dictionaries, can be represented as a tables. Consider the following
+Python data structure, which is a dictionary mapping the names of the months as strings, to the
+number of days in those months as an integer:
 
 .. literalinclude:: ../code/cal.py
    :language: python
    :lines: 13-26
 
-Notice that as dictionaries are unordered prior to Python 3.7, the resulting table may be in a random order.
+This is how we would refer to that table using an ``items-table::`` directive:
+
+::
+
+  .. items-table:: cal.month_lengths
+
+which will be rendered like this:
 
 .. items-table:: cal.month_lengths
 
+Notice that the dictionary keys are included in the table data.
 
-To get a predictable order, use an ordered mapping collection, such as an ``OrderedDict``, like this:
 
-.. literalinclude:: ../code/cal.py
+Table from list of lists
+------------------------
+
+Arbitrarily nested combinations of sequences and mappings (*e.g.* lists and dictionaries).
+
+.. literalinclude:: ../code/elements.py
    :language: python
-   :lines: 28-41
+   :lines: 6-32
 
-.. items-table:: cal.ordered_month_lengths
+This is how we would refer to that table using an ``items-table::`` directive:
 
-Table from a dictionary with title
-==================================
+::
 
-.. items-table:: cal.month_lengths
-   :title: Month length in days
+  .. items-table:: elements.elements
 
-Table from a dictionary with header
-===================================
+which will be rendered like this:
 
-.. items-table:: cal.month_lengths
-   :header: Month, Length
-
-
-Table from a dictionary of dictionaries
-=======================================
-
-.. items-table:: opcodes.OPCODES
-
-
-Table from a dictionary of dictionaries with transposition
-==========================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-indexes: 1
-   :h-level-indexes: 0
-
-
-Table from a dictionary of dictionaries with transposition
-==========================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-indexes: 1
-   :h-level-indexes: 0
-
-Table from a dictionary of dictionaries with descending sort on vertical axis
-=============================================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-sort-orders: dec
-
-Table from a dictionary of dictionaries with ascending sort on horizontal axis
-==============================================================================
-
-.. items-table:: opcodes.OPCODES
-   :h-level-sort-orders: asc
-
-Table from a dictionary of dictionaries with both levels on vertical axis
-=========================================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-indexes: 0, 1
-   :v-level-sort-orders: asc, as-is
-
-Table from a dictionary of dictionaries with both levels on vertical axis with two stub columns
-===============================================================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-indexes: 0, 1
-   :v-level-sort-orders: asc, as-is
-   :stub-columns: 2
-
-Table from a dictionary of dictionaries with ascending sort on horizontal axis and one header row and one stub column
-=====================================================================================================================
-
-.. items-table:: opcodes.OPCODES
-   :h-level-sort-orders: asc
-   :header-rows: 1
-   :stub-columns: 1
-
-
-Table from a dictionary of dictionaries with both levels on vertical axis
-=========================================================================
-
-.. items-table:: opcodes.OPCODES
-   :v-level-indexes: 0, 1
-   :v-level-sort-orders: asc, as-is
-   :v-level-visibility: show, show
-
-
-Table from a stress table
-=========================
-
-.. items-table:: steel.en13445_docs
-   :title: EN 13445 Material Stresses
-   :header-rows: 1
-   :stub-columns: 1
-   :v-level-indexes: 0
-   :h-level-indexes: 1
-   :v-level-titles: Materials
-   :h-level-titles: Temperature °C︎
-   :v-level-sort-orders: as-is
-   :h-level-sort-orders: asc
+.. items-table:: elements.elements

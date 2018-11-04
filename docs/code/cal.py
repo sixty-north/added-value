@@ -1,4 +1,4 @@
-from collections import OrderedDict
+
 
 days_of_the_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -11,31 +11,16 @@ month_of_weeks = [
 ]
 
 month_lengths = {
-    'January': 31,
-    'February': 28,
-    'March': 31,
-    'April': 30,
-    'May': 31,
-    'June': 30,
-    'July': 31,
-    'August': 31,
-    'September': 30,
-    'October': 31,
-    'November': 31,
-    'December': 31,
+    "January": 31,
+    "February": 28,
+    "March": 31,
+    "April": 30,
+    "May": 31,
+    "June": 30,
+    "July": 31,
+    "August": 31,
+    "September": 30,
+    "October": 31,
+    "November": 31,
+    "December": 31,
 }
-
-ordered_month_lengths = OrderedDict([
-    ('January', 31),
-    ('February', 28),
-    ('March', 31),
-    ('April', 30),
-    ('May', 31),
-    ('June', 30),
-    ('July', 31),
-    ('August', 31),
-    ('September', 30),
-    ('October', 31),
-    ('November', 31),
-    ('December', 31),
-])
