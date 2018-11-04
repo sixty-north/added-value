@@ -1,0 +1,5 @@
+metals = [
+    "platinum",
+    "silver",
+    "gold",
+]
