@@ -1,20 +1,14 @@
 import csv
-from abc import abstractmethod, ABCMeta
 from collections import Mapping
-from itertools import chain, repeat, islice
 
 from six import StringIO
 
-from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import flag, unchanged_required, unchanged
-from docutils.parsers.rst.directives.images import Image
-from docutils.parsers.rst.directives.tables import Table
 from docutils.statemachine import StringList
-from docutils.utils import SystemMessagePropagation
 from sphinx.ext.autosummary import import_by_name
 
-from added_value.non_string_iterable import NonStringIterable
+from source.added_value.non_string_iterable import NonStringIterable
 
 
 class ItemsTableDirective(Directive):

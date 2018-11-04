@@ -1,4 +1,4 @@
-from added_value.multisort import multisorted, asc, dec, as_is
+from source.added_value.multisort import multisorted, asc, dec, as_is
 
 
 def test_multisort_with_default_key():

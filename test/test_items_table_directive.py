@@ -1,15 +1,12 @@
-import os
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from bs4 import BeautifulSoup
 from natsort import natsort
-from sphinx_testing import with_app
 
-from added_value.util import is_sorted
+from source.added_value.util import is_sorted
 
-dir_name = "test_items_table_two_v_columns"
-html_filename = "index.html"
+dir_name = Path("test_items_table_directive")
+html_filename = "test_v_level_indexes_v_level_sort_orders_and_v_level_visibility.html"
 
 
 def test_base_name_in_html(app):

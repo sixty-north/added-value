@@ -1,9 +1,7 @@
-from pprint import pprint
-
 from pytest import raises
 
-from added_value.multisort import asc, dec
-from added_value.tabulator import tabulate, validate_level_indexes
+from source.added_value.multisort import asc, dec
+from source.added_value.tabulator import tabulate, validate_level_indexes
 
 a = [
     [1, 2, 3],

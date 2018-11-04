@@ -1,6 +1,6 @@
 from docutils import nodes
 
-from added_value.pyobj_role import make_pyobj_role
+from source.added_value.pyobj_role import make_pyobj_role
 
 
 def make_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):

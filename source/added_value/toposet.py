@@ -3,8 +3,8 @@
 from collections import MutableSet
 from itertools import product
 
-from added_value.toposort import topological_sort, Results
-from added_value.util import pairwise_longest
+from source.added_value.toposort import topological_sort, Results
+from source.added_value.util import pairwise_longest
 
 _FILL = object()
 

@@ -1,6 +1,6 @@
 
 from bisect import bisect_left
-from collections import Sequence, Set
+from collections.abc import Sequence, Set
 from itertools import chain
 
 

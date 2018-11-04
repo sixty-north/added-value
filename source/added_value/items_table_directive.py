@@ -4,14 +4,14 @@ import csv
 
 import natsort
 from docutils.parsers.rst import Directive, directives
-from docutils.parsers.rst.directives import flag, unchanged_required, unchanged
+from docutils.parsers.rst.directives import unchanged_required, unchanged
 from docutils.statemachine import StringList
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
-from added_value.multisort import asc, dec, as_is
-from added_value.non_string_iterable import NonStringIterable
-from added_value.tabulator import tabulate, is_rectangular, size
+from source.added_value.multisort import asc, dec, as_is
+from source.added_value.non_string_iterable import NonStringIterable
+from source.added_value.tabulator import tabulate, is_rectangular, size
 
 CELL_FORMATS_OPTION = 'cell-formats'
 HEADER_OPTION = 'header'

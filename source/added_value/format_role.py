@@ -1,8 +1,6 @@
 from docutils import nodes
 from sphinx.ext.autosummary import import_by_name
 
-from added_value.pyobj_role import make_pyobj_role
-
 
 def format_role(name, rawtext, text, lineno, inliner, options=None, content=None):
     """Include Python object value, rendering it to text using str.

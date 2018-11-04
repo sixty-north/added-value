@@ -1,9 +1,9 @@
-from hypothesis import given, example
+from hypothesis import given
 from hypothesis.strategies import sets, integers
 from pytest import raises
 
-from added_value.toposet import TopoSet
-from added_value.util import pairwise
+from source.added_value.toposet import TopoSet
+from source.added_value.util import pairwise
 
 
 def test_default_constructed_toposet_is_empty():
