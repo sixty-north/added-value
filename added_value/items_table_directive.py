@@ -82,25 +82,25 @@ class ItemsTableDirective(Directive):
 
     @property
     def v_level_titles(self):
-        text = self.options.get(V_LEVEL_TITLES_OPTION, '')
-        try:
-            items = list(map(int, filter(None, text.split(','))))
-        except ValueError:
-            raise self.error(
-                "Could not interpret option {} {!r}".format(V_LEVEL_TITLES_OPTION, text)
-            )
-        return items or None
+        if V_LEVEL_TITLES_OPTION not in self.options:
+            return None
+        titles = self.options[V_LEVEL_TITLES_OPTION]
+        titles_stream = StringIO(titles)
+        reader = csv.reader(titles_stream, delimiter=',', quotechar='"')
+        titles_row = next(reader)
+        stripped_titles = [cell.strip() for cell in titles_row]
+        return stripped_titles
 
     @property
     def h_level_titles(self):
-        text = self.options.get(H_LEVEL_TITLES_OPTION, '')
-        try:
-            items = list(map(int, filter(None, text.split(','))))
-        except ValueError:
-            raise self.error(
-                "Could not interpret option {} {!r}".format(H_LEVEL_TITLES_OPTION, text)
-            )
-        return items or None
+        if H_LEVEL_TITLES_OPTION not in self.options:
+            return None
+        titles = self.options[H_LEVEL_TITLES_OPTION]
+        titles_stream = StringIO(titles)
+        reader = csv.reader(titles_stream, delimiter=',', quotechar='"')
+        titles_row = next(reader)
+        stripped_titles = [cell.strip() for cell in titles_row]
+        return stripped_titles
 
     @property
     def v_level_indexes(self):
@@ -247,7 +247,10 @@ class ItemsTableDirective(Directive):
                       v_level_visibility,
                       h_level_visibility,
                       v_level_sort_keys,
-                      h_level_sort_keys):
+                      h_level_sort_keys,
+                      v_level_titles,
+                      h_level_titles,
+        ):
         """Interpret the given Python object as a table.
 
         Args:
@@ -262,7 +265,6 @@ class ItemsTableDirective(Directive):
         if not isinstance(obj, NonStringIterable):
              raise self.error("Cannot make a table from object {!r}".format(obj))
 
-        # TODO: Visibility args
         rectangular_rows = tabulate(
             obj,
             v_level_indexes=v_level_indexes,
@@ -270,7 +272,9 @@ class ItemsTableDirective(Directive):
             v_level_visibility=v_level_visibility,
             h_level_visibility=h_level_visibility,
             v_level_sort_keys=v_level_sort_keys,
-            h_level_sort_keys=h_level_sort_keys
+            h_level_sort_keys=h_level_sort_keys,
+            v_level_titles=v_level_titles,
+            h_level_titles=h_level_titles,
         )
         assert is_rectangular(rectangular_rows)
         num_rows, num_cols = size(rectangular_rows)
@@ -283,6 +287,10 @@ class ItemsTableDirective(Directive):
         """
         # TODO: Hardwired str transform.
         # 4-tuple: morerows, morecols, offset, cellblock
+        # - morerows: The number of additional rows this cells spans
+        # - morecols: The number of additional columns this cell spans
+        # - offset: Offset from the line-number at the start of the table
+        # - cellblock: The contents of the cell
         return [[(0, 0, 0, StringList(str(cell).splitlines(), source=source))
                  for cell in row] for row in rows]
 
@@ -303,7 +311,9 @@ class ItemsTableDirective(Directive):
             self.v_level_visibility,
             self.h_level_visibility,
             self.v_level_sort_orders,
-            self.h_level_sort_orders
+            self.h_level_sort_orders,
+            self.v_level_titles,
+            self.h_level_titles,
         )
         max_cols = max(max_cols, max_header_cols)
         col_widths = self.get_column_widths(max_cols)

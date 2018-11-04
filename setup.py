@@ -59,7 +59,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         'Topic :: Documentation',
         'Topic :: Utilities',
@@ -69,7 +68,7 @@ setup(
     install_requires=install_requires,
     requires=install_requires,
     extras_require={
-        'test': ['pytest', 'sphinx-testing'],
+        'test': ['pytest', 'sphinx-testing', 'beautifulsoup4'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
     }
 )

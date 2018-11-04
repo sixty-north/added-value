@@ -1,10 +1,11 @@
 from collections import Mapping, deque
-from itertools import product
+from itertools import product, chain, repeat
 
 from added_value.items_table_directive import NonStringIterable
 from added_value.multisort import tuplesorted
 from added_value.sorted_frozen_set import SortedFrozenSet
 from added_value.toposet import TopoSet
+from added_value.util import unchain, extended_unchain, empty_iterable
 
 depth_marker = object()
 ROOT = object()
@@ -41,20 +42,30 @@ def breadth_first(obj, leaves=False):
             if leaves:
                 current_level_keys.add(node)
 
-    return [list(s) for s in level_keys[:-1]] # Why the slice? Remove leaves? Is the last always empty?
+    return [
+        list(s) for s in level_keys[:-1]
+    ]  # Why the slice? Remove leaves? Is the last always empty?
+
 
 class Missing(object):
-
     def __str__(self):
-        return ''
+        return ""
 
     def __repr__(self):
         return self.__class__.__name__
 
+
 MISSING = Missing()
 
 
-def tabulate_body(obj, level_keys, v_level_indexes, h_level_indexes, v_level_sort_keys=None, h_level_sort_keys=None):
+def tabulate_body(
+    obj,
+    level_keys,
+    v_level_indexes,
+    h_level_indexes,
+    v_level_sort_keys=None,
+    h_level_sort_keys=None,
+):
     """
     Args:
         v_level_indexes: A sequence of level indexes.
@@ -99,10 +110,13 @@ def make_sorter(level_sort_keys, level_indexes):
         if len(level_sort_keys) != len(level_indexes):
             raise ValueError(
                 "level_sort_keys with length {} does not correspond to level_indexes with length {}".format(
-                    len(level_sort_keys), len(level_indexes)))
+                    len(level_sort_keys), len(level_indexes)
+                )
+            )
 
         def key_sorted(level_keys):
             return tuplesorted(level_keys, *level_sort_keys)
+
     else:
         key_sorted = list
     return key_sorted
@@ -120,7 +134,9 @@ def strip_missing_rows(table, row_keys):
 
 def strip_missing_columns(table, h_key_tuples):
     transposed_table = transpose(table)
-    stripped_transposed_table, stripped_h_key_tuples = strip_missing_rows(transposed_table, h_key_tuples)
+    stripped_transposed_table, stripped_h_key_tuples = strip_missing_rows(
+        transposed_table, h_key_tuples
+    )
     stripped_table = transpose(stripped_transposed_table)
     return stripped_table, stripped_h_key_tuples
 
@@ -129,8 +145,10 @@ def merge_into_by_index(sequence, indexes, values):
     for index, value in zip(indexes, values):
         sequence[index] = value
 
+
 def is_rectangular(seq_of_seqs):
     return len(set(map(len, seq_of_seqs))) <= 1
+
 
 def size_h(rows_of_columns):
     try:
@@ -140,17 +158,22 @@ def size_h(rows_of_columns):
     else:
         return len(first_row)
 
+
 def size_v(rows_of_columns):
     return sum(1 for row in rows_of_columns if len(row) != 0)
 
+
 def size(rows_of_columns):
     return size_v(rows_of_columns), size_h(rows_of_columns)
+
 
 def transpose(rows_of_columns):
     return list(map(list, zip(*rows_of_columns)))
 
 
-def assemble_table(table_body, v_key_tuples, h_key_tuples, empty=''):
+def assemble_table(
+    table_body, v_key_tuples, h_key_tuples, v_level_titles=None, h_level_titles=None, empty=""
+):
     if not is_rectangular(table_body):
         raise ValueError("table_body {} is not rectangular".format(table_body))
     if not is_rectangular(v_key_tuples):
@@ -160,16 +183,35 @@ def assemble_table(table_body, v_key_tuples, h_key_tuples, empty=''):
     if size_v(v_key_tuples) > 0 and (size_v(table_body) != size_v(v_key_tuples)):
         raise ValueError("table body and v_key_tuples have incompatible dimensions")
     h_key_tuples_transposed = transpose(h_key_tuples)
-    if size_h(h_key_tuples_transposed) > 0 and (size_h(table_body) != size_h(h_key_tuples_transposed)):
+    if size_h(h_key_tuples_transposed) > 0 and (
+        size_h(table_body) != size_h(h_key_tuples_transposed)
+    ):
         raise ValueError("table body and h_key_tuples have incompatible dimensions")
 
-    num_stub_columns = size_h(v_key_tuples)
+    if (v_level_titles is not None) and (len(v_level_titles) != size_h(v_key_tuples)):
+        raise ValueError("v_level_titles and v_key_tuples have incompatible dimensions")
+
+    if (h_level_titles is not None) and (len(h_level_titles) != size_v(h_key_tuples_transposed)):
+        raise ValueError("h_level_titles and h_key_tuples have incompatible dimensions")
+
+    boxed_h_level_titles = (
+        unchain(h_level_titles)
+        if (h_level_titles is not None)
+        else repeat(empty_iterable(), size_v(h_key_tuples_transposed))
+    )
+
+    num_h_level_title_columns = int(bool(h_level_titles))
+    num_stub_columns = max(size_h(v_key_tuples), num_h_level_title_columns)
     table = []
 
-    for h_key_row in h_key_tuples_transposed:
-        row = [empty] * num_stub_columns
-        row.extend(h_key_row)
+    num_empty_columns = num_stub_columns - num_h_level_title_columns
+    for boxed_h_level_title, h_key_row in zip(boxed_h_level_titles, h_key_tuples_transposed):
+        row = list(chain(repeat(" ", num_empty_columns), boxed_h_level_title, h_key_row))
         table.append(row)
+
+    if v_level_titles is not None:
+        v_level_titles_row = v_level_titles + [empty] * size_h(table_body)
+        table.append(v_level_titles_row)
 
     for v_key_row, table_row in zip(v_key_tuples, table_body):
         row = list(v_key_row)
@@ -181,14 +223,17 @@ def assemble_table(table_body, v_key_tuples, h_key_tuples, empty=''):
 
 
 def tabulate(
-        obj,
-        v_level_indexes=None,
-        h_level_indexes=None,
-        v_level_visibility=None,
-        h_level_visibility=None,
-        v_level_sort_keys=None,
-        h_level_sort_keys=None,
-        empty=''):
+    obj,
+    v_level_indexes=None,
+    h_level_indexes=None,
+    v_level_visibility=None,
+    h_level_visibility=None,
+    v_level_sort_keys=None,
+    h_level_sort_keys=None,
+    v_level_titles=None,
+    h_level_titles=None,
+    empty="",
+):
     """Render a nested data structure into a two-dimensional table.
 
     Args:
@@ -246,6 +291,16 @@ def tabulate(
             controls how that key is sorted. If None, keys are sorted
             as-is.
 
+        v_level_titles: An optional iterable of strings, where each
+            string is a title which corresponds to a level in v_level_indexes,
+            and which will be displayed against the row keys for that level.
+            If None, no titles will be included.
+
+        h_level_titles: An optional iterable of strings, where each
+            string is a title which corresponds to a level in h_level_indexes,
+            and which will be displayed against the column keys for that level.
+            If None, no titles will be included.
+
         empty: An optional string value to use for empty cells.
 
     Returns:
@@ -258,7 +313,9 @@ def tabulate(
     """
     level_keys = breadth_first(obj)
 
-    v_level_indexes, h_level_indexes = validate_level_indexes(len(level_keys), v_level_indexes, h_level_indexes)
+    v_level_indexes, h_level_indexes = validate_level_indexes(
+        len(level_keys), v_level_indexes, h_level_indexes
+    )
 
     if v_level_visibility is None:
         v_level_visibility = [True] * len(v_level_indexes)
@@ -266,18 +323,16 @@ def tabulate(
         h_level_visibility = [True] * len(h_level_indexes)
 
     table, v_key_tuples, h_key_tuples = tabulate_body(
-        obj,
-        level_keys,
-        v_level_indexes,
-        h_level_indexes,
-        v_level_sort_keys,
-        h_level_sort_keys)
+        obj, level_keys, v_level_indexes, h_level_indexes, v_level_sort_keys, h_level_sort_keys
+    )
 
     table, v_key_tuples = strip_missing_rows(table, v_key_tuples)
     table, h_key_tuples = strip_missing_columns(table, h_key_tuples)
     v_key_tuples = strip_hidden(v_key_tuples, v_level_visibility)
     h_key_tuples = strip_hidden(h_key_tuples, h_level_visibility)
-    return assemble_table(table, v_key_tuples, h_key_tuples, empty)
+    return assemble_table(
+        table, v_key_tuples, h_key_tuples, v_level_titles, h_level_titles, empty=empty
+    )
 
 
 def validate_level_indexes(num_levels, v_level_indexes, h_level_indexes):
@@ -332,8 +387,11 @@ def validate_level_indexes(num_levels, v_level_indexes, h_level_indexes):
 
     unmentioned_levels = all_levels - v_level_set - h_level_set
     if len(unmentioned_levels) > 0:
-        raise ValueError("v_level_indexes and h_level_indexes do not together include levels {}".format(
-            ', '.join(map(str, unmentioned_levels))))
+        raise ValueError(
+            "v_level_indexes and h_level_indexes do not together include levels {}".format(
+                ", ".join(map(str, unmentioned_levels))
+            )
+        )
     if not h_level_set.isdisjoint(v_level_set):
         raise ValueError("h_level_indexes and v_level_indexes are not disjoint")
     v_level_indexes = list(v_level_indexes)
@@ -355,10 +413,14 @@ def strip_hidden(key_tuples, visibilities):
     result = []
     for key_tuple in key_tuples:
         if len(key_tuple) != len(visibilities):
-            raise ValueError("length of key tuple {} is not equal to length of visibilities {}".format(key_tuple, visibilities))
+            raise ValueError(
+                "length of key tuple {} is not equal to length of visibilities {}".format(
+                    key_tuple, visibilities
+                )
+            )
         filtered_tuple = tuple(item for item, visible in zip(key_tuple, visibilities) if visible)
         result.append(filtered_tuple)
     return result
 
-# TODO: Multidimensional arrays. e.g. ndarray
 
+# TODO: Multidimensional arrays. e.g. ndarray

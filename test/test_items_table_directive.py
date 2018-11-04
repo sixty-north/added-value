@@ -1,5 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 from bs4 import BeautifulSoup
 from natsort import natsort
@@ -7,17 +8,13 @@ from sphinx_testing import with_app
 
 from added_value.util import is_sorted
 
-basename = "test_items_table_two_v_columns"
+dir_name = "test_items_table_two_v_columns"
 html_filename = "index.html"
 
 
-@with_app(
-    srcdir=os.path.join('test/examples/source/', basename),
-    confdir='test/examples/source',
-    copy_srcdir_to_tmpdir=True)
-def test_base_name_in_html(app, status, warning):
+def test_base_name_in_html(app):
     app.build()
-    html_doc = (app.outdir / html_filename).read_text()
+    html_doc = Path(app.outdir / dir_name / html_filename).read_text()
     rows = extract_table_body_from_html(html_doc)
     column = extract_column_from_rows(rows, 0)
     assert is_sorted(column, key=natsort.natsort_keygen())

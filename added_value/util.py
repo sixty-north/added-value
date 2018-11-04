@@ -24,3 +24,33 @@ def pairwise_longest(iterable, fillvalue=None):
 
 def is_sorted(iterable, key=lambda x: x):
     return all(a <= b for a, b in pairwise((key(item) for item in iterable)))
+
+# def unchain(iterable):
+#     """Convert an iterable into an infinite series of lists of containing zero or one items.
+#     """
+#     if iterable is not None:
+#         for item in iterable:
+#             yield [item]
+#     while True:
+#         yield []
+
+def one(item):
+    yield item
+
+
+def extend(iterable, item_factory=lambda: None):
+    return chain(iterable, iter(item_factory, object()))
+
+
+def unchain(iterable, box=list):
+    return chain(map(box, iterable))
+
+
+def extended_unchain(iterable, box=list):
+    """Convert an iterable into an infinite series of lists of containing zero or one items.
+    """
+    return extend(unchain(iterable, box), box)
+
+
+def empty_iterable():
+    yield from ()

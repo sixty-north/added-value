@@ -2,6 +2,37 @@
 Tables
 ======
 
+Standard table
+==============
+
++-----------+------------+------------+----------+----------+
+| Column    | Header     | Header 2   | Header 3 | Header 4 |
+| Title     | Title      |            |          |          |
++===========+============+============+==========+==========+
+| body row 1, column 1   | column 2   | column 3 | column 4 |
++------------------------+------------+----------+----------+
+| body row 2             | Cells may span columns.          |
++------------------------+------------+---------------------+
+| body row 3             | Cells may  | - Table cells       |
++------------------------+ span rows. | - contain           |
+| body row 4             |            | - body elements.    |
++------------------------+------------+---------------------+
+
+
++------------------------+------------+----------+----------+
+| Header row, column 1   | Header 2   | Header 3 | Header 4 |
+| (header rows optional) |            |          |          |
++========================+============+==========+==========+
+| body row 1, column 1   | column 2   | column 3 | column 4 |
++------------------------+------------+----------+----------+
+| body row 2             | Cells may span columns.          |
++------------------------+------------+---------------------+
+| body row 3             | Cells may  | - Table cells       |
++------------------------+ span rows. | - contain           |
+| body row 4             |            | - body elements.    |
++------------------------+------------+---------------------+
+
+
 Table from list
 ===============
 
@@ -135,6 +166,6 @@ Table from a stress table
    :v-level-indexes: 0
    :h-level-indexes: 1
    :v-level-titles: Materials
-   :h-level-titles: Temperatures C
-   :v-level-sort-orders: asc
+   :h-level-titles: Temperature °C︎
+   :v-level-sort-orders: as-is
    :h-level-sort-orders: asc
