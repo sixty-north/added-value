@@ -126,9 +126,9 @@ The ``items-table::`` directive support the following options:
     indexes). Defaults to even level indexes. Must be disjoint with h-level-indexes.
 :h-level-indexes: A comma-separated list of level indexes for the horizontal axis of the table
     (column indexes). Defaults to odd level indexes. Must be disjoint with v-level-indexes.
-:v-level-visibility: A comma-separated list of ``true`` or ``false`` values controlling index
+:v-level-visibility: A comma-separated list of ``show`` or ``hide`` values controlling index
     visibility for the vertical axis of the table. Useful for hiding unwanted sequence indexes.
-:h-level-visibility: A comma-separated list of ``true`` or ``false`` values controlling index
+:h-level-visibility: A comma-separated list of ``show`` or ``hide`` values controlling index
     visibility for the horizontal axis of the table. Useful for hiding unwanted sequence indexes.
 :h-level-titles: A comma-separated list of names to be associated with each level for the horizontal
     axis of the table (column indexes).
@@ -233,11 +233,84 @@ which will be rendered like this:
    :h-level-indexes: 1, 2
 
 
-
-
-
 Hide a level of indexes
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Particularly when dealing with sequences (*e.g.* lists) of data, we don't wish to see the zero-based
-indexes. To disable
+indexes. Consider this list of lists containing a calendar of days in October 2018:
+
+.. literalinclude:: ../code/cal.py
+   :language: python
+   :lines: 28-34
+
+We can display it as a table using this:
+
+::
+
+  .. items-table:: cal.october_2018
+
+which will be rendered like this:
+
+.. items-table:: cal.october_2018
+
+The zero-based indexes used as row and column headers are unnecessary, and can be disabled using the
+``:v-level-visibility:`` and ``:h-level-visibility:`` options. Each of these accepts a
+comma-separated list of ``show`` or ``hide`` values:
+
+::
+
+  .. items-table:: cal.october_2018
+     :v-level-visibility: hide
+     :h-level-visibility: hide
+
+which now looks like this:
+
+.. items-table:: cal.october_2018
+   :v-level-visibility: hide
+   :h-level-visibility: hide
+
+
+Adding a header row
+~~~~~~~~~~~~~~~~~~~
+
+If a suitable header row is not incorporated into the data structure, you can add it using
+``:header:`` option, which accepts a comma-separated items. Each item can optionally be quoted,
+which can be useful if it needs to contain a comma.
+
+::
+
+  .. items-table:: cal.october_2018
+     :header: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+     :v-level-visibility: hide
+     :h-level-visibility: hide
+
+which renders like this:
+
+.. items-table:: cal.october_2018
+   :header: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+   :v-level-visibility: hide
+   :h-level-visibility: hide
+
+
+Adding a title
+~~~~~~~~~~~~~~
+
+A title can be added using the ``:title:`` option:
+
+::
+
+  .. items-table:: cal.october_2018
+     :title: October 2018
+     :header: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+     :v-level-visibility: hide
+     :h-level-visibility: hide
+
+which renders like this:
+
+.. items-table:: cal.october_2018
+   :title: October 2018
+   :header: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+   :v-level-visibility: hide
+   :h-level-visibility: hide
+
+

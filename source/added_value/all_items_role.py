@@ -1,5 +1,6 @@
 from docutils import nodes
 
+from added_value.grammatical_conjunctions import conjunction
 from source.added_value.pyobj_role import make_pyobj_role
 
 
@@ -14,17 +15,9 @@ def make_all_items_node(rawtext, app, prefixed_name, obj, parent, modname, optio
     :param module: The name of the module containing obj.
     :param options: Options dictionary passed to role func.
     """
-    if len(obj) == 0:
-        text = ''
-    elif len(obj) == 1:
-        text = str(obj)
-    elif len(obj) == 2:
-        text = "{!s} and {!s}".format(obj[0], obj[1])
-    else:
-        all_but_last = ', '.join(map(str, obj[:-1]))
-        last = obj[-1]
-        text = "{}, and {!s}".format(all_but_last, last)
+    text = conjunction(obj, "and")
     node = nodes.Text(text, rawsource=rawtext)
     return node
+
 
 all_items_role = make_pyobj_role(make_all_items_node)
