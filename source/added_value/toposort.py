@@ -1,12 +1,13 @@
 from collections import defaultdict, namedtuple
 
-Results = namedtuple('Results', ['sorted', 'cyclic'])
+Results = namedtuple("Results", ["sorted", "cyclic"])
+
 
 def topological_sort(dependency_pairs):
-    'Sort values subject to dependency constraints'
-    num_heads = defaultdict(int)   # num arrows pointing in
-    tails = defaultdict(list)      # list of arrows going out
-    heads = []                     # unique list of heads in order first seen
+    "Sort values subject to dependency constraints"
+    num_heads = defaultdict(int)  # num arrows pointing in
+    tails = defaultdict(list)  # list of arrows going out
+    heads = []  # unique list of heads in order first seen
     for h, t in dependency_pairs:
         num_heads[t] += 1
         if h in tails:
@@ -24,7 +25,8 @@ def topological_sort(dependency_pairs):
     cyclic = [n for n, heads in num_heads.items() if heads]
     return Results(ordered, cyclic)
 
-if __name__ == '__main__':
-    print( topological_sort('ab ba'.split()) )
-    print( topological_sort('ah bg cf ch di ed fb fg hd he ib'.split()) )
-    print( topological_sort('ah bg cf ch di ed fb fg hd he ib fc'.split()) )
+
+if __name__ == "__main__":
+    print(topological_sort("ab ba".split()))
+    print(topological_sort("ah bg cf ch di ed fb fg hd he ib".split()))
+    print(topological_sort("ah bg cf ch di ed fb fg hd he ib fc".split()))

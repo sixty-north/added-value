@@ -14,33 +14,27 @@ from source.added_value.multisort import asc, dec, as_is
 from source.added_value.non_string_iterable import NonStringIterable
 from source.added_value.tabulator import tabulate, is_rectangular, size
 
-CELL_FORMATS_OPTION = 'cell-formats'
-HEADER_OPTION = 'header'
-STUB_COLUMNS_OPTION = 'stub-columns'
-HEADER_ROWS_OPTION = 'header-rows'
-WIDTHS_OPTION = 'widths'
-TITLE_OPTION = 'title'
-H_LEVEL_TITLES_OPTION = 'h-level-titles'
-V_LEVEL_TITLES_OPTION = 'v-level-titles'
-V_LEVEL_SORT_ORDERS_OPTION = 'v-level-sort-orders'
-H_LEVEL_SORT_ORDERS_OPTION = 'h-level-sort-orders'
-V_LEVEL_VISIBILITY_OPTION = 'v-level-visibility'
-H_LEVEL_VISIBILITY_OPTION = 'h-level-visibility'
-V_LEVEL_INDEXES_OPTION = 'v-level-indexes'
-H_LEVEL_INDEXES_OPTION = 'h-level-indexes'
+CELL_FORMATS_OPTION = "cell-formats"
+HEADER_OPTION = "header"
+STUB_COLUMNS_OPTION = "stub-columns"
+HEADER_ROWS_OPTION = "header-rows"
+WIDTHS_OPTION = "widths"
+TITLE_OPTION = "title"
+H_LEVEL_TITLES_OPTION = "h-level-titles"
+V_LEVEL_TITLES_OPTION = "v-level-titles"
+V_LEVEL_SORT_ORDERS_OPTION = "v-level-sort-orders"
+H_LEVEL_SORT_ORDERS_OPTION = "h-level-sort-orders"
+V_LEVEL_VISIBILITY_OPTION = "v-level-visibility"
+H_LEVEL_VISIBILITY_OPTION = "h-level-visibility"
+V_LEVEL_INDEXES_OPTION = "v-level-indexes"
+H_LEVEL_INDEXES_OPTION = "h-level-indexes"
 
 _natural = natsort.natsort_keygen()
 
-SORT_ORDERS = {
-    'asc': asc(_natural),
-    'dec': dec(_natural),
-    'as-is': as_is(),
-}
+SORT_ORDERS = {"asc": asc(_natural), "dec": dec(_natural), "as-is": as_is()}
 
-VISIBILITIES = {
-    'show': True,
-    'hide': False,
-}
+VISIBILITIES = {"show": True, "hide": False}
+
 
 class ItemsTableDirective(Directive):
     """Format a sequence as a table.
@@ -64,14 +58,12 @@ class ItemsTableDirective(Directive):
         H_LEVEL_SORT_ORDERS_OPTION: unchanged,
         V_LEVEL_SORT_ORDERS_OPTION: unchanged,
         CELL_FORMATS_OPTION: unchanged_required,
-        WIDTHS_OPTION: directives.value_or(
-            ('auto', 'grid'),
-            directives.positive_int_list)
+        WIDTHS_OPTION: directives.value_or(("auto", "grid"), directives.positive_int_list),
     }
 
     @property
     def widths(self):
-        return self.options.get(WIDTHS_OPTION, '')
+        return self.options.get(WIDTHS_OPTION, "")
 
     @property
     def header_rows(self):
@@ -87,7 +79,7 @@ class ItemsTableDirective(Directive):
             return None
         titles = self.options[V_LEVEL_TITLES_OPTION]
         titles_stream = StringIO(titles)
-        reader = csv.reader(titles_stream, delimiter=',', quotechar='"')
+        reader = csv.reader(titles_stream, delimiter=",", quotechar='"')
         titles_row = next(reader)
         stripped_titles = [cell.strip() for cell in titles_row]
         return stripped_titles
@@ -98,16 +90,16 @@ class ItemsTableDirective(Directive):
             return None
         titles = self.options[H_LEVEL_TITLES_OPTION]
         titles_stream = StringIO(titles)
-        reader = csv.reader(titles_stream, delimiter=',', quotechar='"')
+        reader = csv.reader(titles_stream, delimiter=",", quotechar='"')
         titles_row = next(reader)
         stripped_titles = [cell.strip() for cell in titles_row]
         return stripped_titles
 
     @property
     def v_level_indexes(self):
-        text = self.options.get(V_LEVEL_INDEXES_OPTION, '')
+        text = self.options.get(V_LEVEL_INDEXES_OPTION, "")
         try:
-            items = list(map(int, filter(None, text.split(','))))
+            items = list(map(int, filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_INDEXES_OPTION, text)
@@ -116,9 +108,9 @@ class ItemsTableDirective(Directive):
 
     @property
     def h_level_indexes(self):
-        text = self.options.get(H_LEVEL_INDEXES_OPTION, '')
+        text = self.options.get(H_LEVEL_INDEXES_OPTION, "")
         try:
-            items = list(map(int, filter(None, text.split(','))))
+            items = list(map(int, filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_INDEXES_OPTION, text)
@@ -127,9 +119,9 @@ class ItemsTableDirective(Directive):
 
     @property
     def v_level_visibility(self):
-        text = self.options.get(V_LEVEL_VISIBILITY_OPTION, '')
+        text = self.options.get(V_LEVEL_VISIBILITY_OPTION, "")
         try:
-            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(','))))
+            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_VISIBILITY_OPTION, text)
@@ -143,15 +135,15 @@ class ItemsTableDirective(Directive):
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
                     V_LEVEL_VISIBILITY_OPTION,
                     text,
-                    conjunction(list(map(repr, VISIBILITIES.keys())), "or")
+                    conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
                 )
             )
 
     @property
     def h_level_visibility(self):
-        text = self.options.get(H_LEVEL_VISIBILITY_OPTION, '')
+        text = self.options.get(H_LEVEL_VISIBILITY_OPTION, "")
         try:
-            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(','))))
+            visibilities = list(map(lambda s: s.strip().lower(), filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_VISIBILITY_OPTION, text)
@@ -165,15 +157,15 @@ class ItemsTableDirective(Directive):
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
                     H_LEVEL_VISIBILITY_OPTION,
                     text,
-                    conjunction(list(map(repr, VISIBILITIES.keys())), "or")
+                    conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
                 )
             )
 
     @property
     def v_level_sort_orders(self):
-        text = self.options.get(V_LEVEL_SORT_ORDERS_OPTION, '')
+        text = self.options.get(V_LEVEL_SORT_ORDERS_OPTION, "")
         try:
-            orders = list(map(lambda s: s.strip(), filter(None, text.split(','))))
+            orders = list(map(lambda s: s.strip(), filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(V_LEVEL_SORT_ORDERS_OPTION, text)
@@ -185,17 +177,15 @@ class ItemsTableDirective(Directive):
         except KeyError:
             raise self.error(
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
-                    V_LEVEL_SORT_ORDERS_OPTION,
-                    text,
-                    ', '.join(SORT_ORDERS.keys())
+                    V_LEVEL_SORT_ORDERS_OPTION, text, ", ".join(SORT_ORDERS.keys())
                 )
             )
 
     @property
     def h_level_sort_orders(self):
-        text = self.options.get(H_LEVEL_SORT_ORDERS_OPTION, '')
+        text = self.options.get(H_LEVEL_SORT_ORDERS_OPTION, "")
         try:
-            orders = list(map(lambda s: s.strip(), filter(None, text.split(','))))
+            orders = list(map(lambda s: s.strip(), filter(None, text.split(","))))
         except ValueError:
             raise self.error(
                 "Could not interpret option {} {!r}".format(H_LEVEL_SORT_ORDERS_OPTION, text)
@@ -207,9 +197,7 @@ class ItemsTableDirective(Directive):
         except KeyError:
             raise self.error(
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
-                    H_LEVEL_SORT_ORDERS_OPTION,
-                    text,
-                    ', '.join(SORT_ORDERS.keys())
+                    H_LEVEL_SORT_ORDERS_OPTION, text, ", ".join(SORT_ORDERS.keys())
                 )
             )
 
@@ -217,8 +205,10 @@ class ItemsTableDirective(Directive):
         if isinstance(self.widths, list):
             if len(self.widths) != max_cols:
                 raise self.error(
-                    "{!s} widths tabulate not match the number of columns {!s} in table. ({} directive)."
-                        .format(self.widths, max_cols, self.name))
+                    "{!s} widths tabulate not match the number of columns {!s} in table. ({} directive).".format(
+                        self.widths, max_cols, self.name
+                    )
+                )
             col_widths = self.widths
         elif max_cols:
             col_widths = [100.0 / max_cols] * max_cols
@@ -235,23 +225,25 @@ class ItemsTableDirective(Directive):
             # TODO: Have the option for this to be a Python object too.
             header = self.options[HEADER_OPTION]
             header_stream = StringIO(header)
-            reader = csv.reader(header_stream, delimiter=',', quotechar='"')
+            reader = csv.reader(header_stream, delimiter=",", quotechar='"')
             header_row = next(reader)
             stripped_header_row = [cell.strip() for cell in header_row]
             table_head.append(stripped_header_row)
             max_header_cols = len(header_row)
         return table_head, max_header_cols
 
-    def interpret_obj(self, obj,
-                      v_level_indexes,
-                      h_level_indexes,
-                      v_level_visibility,
-                      h_level_visibility,
-                      v_level_sort_keys,
-                      h_level_sort_keys,
-                      v_level_titles,
-                      h_level_titles,
-        ):
+    def interpret_obj(
+        self,
+        obj,
+        v_level_indexes,
+        h_level_indexes,
+        v_level_visibility,
+        h_level_visibility,
+        v_level_sort_keys,
+        h_level_sort_keys,
+        v_level_titles,
+        h_level_titles,
+    ):
         """Interpret the given Python object as a table.
 
         Args:
@@ -264,7 +256,7 @@ class ItemsTableDirective(Directive):
             TypeError: If the type couldn't be interpreted as a table.
         """
         if not isinstance(obj, NonStringIterable):
-             raise self.error("Cannot make a table from object {!r}".format(obj))
+            raise self.error("Cannot make a table from object {!r}".format(obj))
 
         rectangular_rows = tabulate(
             obj,
@@ -292,8 +284,10 @@ class ItemsTableDirective(Directive):
         # - morecols: The number of additional columns this cell spans
         # - offset: Offset from the line-number at the start of the table
         # - cellblock: The contents of the cell
-        return [[(0, 0, 0, StringList(str(cell).splitlines(), source=source))
-                 for cell in row] for row in rows]
+        return [
+            [(0, 0, 0, StringList(str(cell).splitlines(), source=source)) for cell in row]
+            for row in rows
+        ]
 
     def run(self):
 
@@ -303,7 +297,8 @@ class ItemsTableDirective(Directive):
             prefixed_name, obj, parent, modname = import_by_name(obj_name)
         except ImportError:
             raise self.error(
-                "Could not locate Python object {} ({} directive).".format(obj_name, self.name))
+                "Could not locate Python object {} ({} directive).".format(obj_name, self.name)
+            )
         table_head, max_header_cols = self.process_header_option()
         rows, max_cols = self.interpret_obj(
             obj,
@@ -318,18 +313,19 @@ class ItemsTableDirective(Directive):
         )
         max_cols = max(max_cols, max_header_cols)
         col_widths = self.get_column_widths(max_cols)
-        table_head.extend(rows[:self.header_rows])
-        table_body = rows[self.header_rows:]
+        table_head.extend(rows[: self.header_rows])
+        table_body = rows[self.header_rows :]
 
         table_head = self.augment_cells(table_head, source=prefixed_name)
         table_body = self.augment_cells(table_body, source=prefixed_name)
 
         table = (col_widths, table_head, table_body)
-        table_node = self.state.build_table(table, self.content_offset,
-                                            self.stub_columns, widths=self.widths)
-        table_node['classes'] += self.options.get('class', [])
-        if 'align' in self.options:
-            table_node['align'] = self.options.get('align')
+        table_node = self.state.build_table(
+            table, self.content_offset, self.stub_columns, widths=self.widths
+        )
+        table_node["classes"] += self.options.get("class", [])
+        if "align" in self.options:
+            table_node["align"] = self.options.get("align")
         self.add_name(table_node)
 
         return [table_node]

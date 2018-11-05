@@ -18,4 +18,5 @@ def make_str_node(rawtext, app, prefixed_name, obj, parent, modname, options):
     node = nodes.Text(text, rawsource=rawtext)
     return node
 
+
 str_role = make_pyobj_role(make_str_node)

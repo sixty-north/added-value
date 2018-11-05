@@ -1,10 +1,10 @@
 from natsort import natsort_keygen
 
-class Key(object):
 
+class Key(object):
     def __init__(self, func, reverse=False):
         self._func = func
-        self._reverse=reverse
+        self._reverse = reverse
 
     @property
     def func(self):
@@ -74,7 +74,8 @@ def tuplesorted(items, *keys):
         A list of items sorted according to keys.
     """
     # Transform the keys so each works on one item of the tuple
-    tuple_keys = [Key(func=lambda t, i=index, k=key: k.func(t[i]),
-                      reverse=key.reverse)
-                  for index, key in enumerate(keys)]
+    tuple_keys = [
+        Key(func=lambda t, i=index, k=key: k.func(t[i]), reverse=key.reverse)
+        for index, key in enumerate(keys)
+    ]
     return multisorted(items, *tuple_keys)

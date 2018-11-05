@@ -1,5 +1,3 @@
-
-
 from collections import MutableSet
 from itertools import product
 
@@ -19,7 +17,6 @@ class TopoSet(MutableSet):
         if iterable is not None:
             self.update(iterable)
 
-
     def __len__(self):
         return len(self._topo_sorted.sorted) + len(self._topo_sorted.cyclic)
 
@@ -38,7 +35,7 @@ class TopoSet(MutableSet):
             sorted, cyclic = topological_sort(self._edges)
             self._results = Results(
                 sorted=[item for item in sorted if item is not _FILL],
-                cyclic=[item for item in cyclic if item is not _FILL]
+                cyclic=[item for item in cyclic if item is not _FILL],
             )
         return self._results
 
@@ -74,10 +71,10 @@ class TopoSet(MutableSet):
         return bool(self._topo_sorted.cyclic)
 
     def __iter__(self):
-            for item in self._topo_sorted.sorted:
-                yield item
-            for item in self._topo_sorted.cyclic:
-                yield item
+        for item in self._topo_sorted.sorted:
+            yield item
+        for item in self._topo_sorted.cyclic:
+            yield item
 
     @property
     def sorted(self):
@@ -89,6 +86,5 @@ class TopoSet(MutableSet):
 
     def __repr__(self):
         name = type(self).__name__
-        iterable = ', '.join(map(repr, self)) if len(self) > 0 else ''
+        iterable = ", ".join(map(repr, self)) if len(self) > 0 else ""
         return "{}([{}])".format(name, iterable)
-

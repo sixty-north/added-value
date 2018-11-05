@@ -24,13 +24,12 @@ def format_role(name, rawtext, text, lineno, inliner, options=None, content=None
     if content is None:
         content = []
 
-    name, _, format_spec = tuple(field.strip() for field in text.partition(','))
+    name, _, format_spec = tuple(field.strip() for field in text.partition(","))
 
     try:
         prefixed_name, obj, parent, modname = import_by_name(name)
     except ImportError:
-        msg = inliner.reporter.error(
-            "Could not locate Python object {}".format(text), line=lineno)
+        msg = inliner.reporter.error("Could not locate Python object {}".format(text), line=lineno)
         prb = inliner.problematic(rawtext, rawtext, msg)
         return [prb], [msg]
     app = inliner.document.settings.env.app
@@ -39,7 +38,8 @@ def format_role(name, rawtext, text, lineno, inliner, options=None, content=None
         formatted_value = format(obj, format_spec)
     except ValueError as value_error:
         msg = inliner.reporter.error(
-            "Format error in {}: {}".format(text, value_error), line=lineno)
+            "Format error in {}: {}".format(text, value_error), line=lineno
+        )
         prb = inliner.problematic(rawtext, rawtext, msg)
         return [prb], [msg]
 

@@ -8,14 +8,14 @@ from source.added_value.version import __version__
 
 
 def setup(app):
-    if not hasattr(app, 'add_config_value'):
+    if not hasattr(app, "add_config_value"):
         return  # probably called by nose, better bail out
 
-    app.add_role('repr', repr_role)
-    app.add_role('str', str_role)
-    app.add_role('format', format_role)
-    app.add_role('all-items', all_items_role)
-    app.add_role('any-items', any_items_role)
-    app.add_directive('items-table', ItemsTableDirective)
+    app.add_role("repr", repr_role)
+    app.add_role("str", str_role)
+    app.add_role("format", format_role)
+    app.add_role("all-items", all_items_role)
+    app.add_role("any-items", any_items_role)
+    app.add_directive("items-table", ItemsTableDirective)
 
-    return {'version': __version__}
+    return {"version": __version__}
