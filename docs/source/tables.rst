@@ -295,6 +295,8 @@ which renders like this:
 Adding a title
 ~~~~~~~~~~~~~~
 
+.. warning:: Titles are not currently working.
+
 A title can be added using the ``:title:`` option:
 
 ::
