@@ -28,7 +28,7 @@ def read_version():
     local_vars = {}
     with open(version_file) as handle:
         exec(handle.read(), {}, local_vars)  # pylint: disable=exec-used
-    return (local_vars['__version__'], local_vars['__version_info__'])
+    return local_vars['__version__']
 
 install_requires = [
     'docutils',
@@ -42,7 +42,7 @@ setup(
     name='added-value',
     packages=find_packages(where='source'),
     package_dir={'': 'source'},
-    version = read_version()[0],
+    version = read_version(),
     url='https://github.com/sixty-north/added-value',
     download_url="https://pypi.python.org/pypi/added-value",
     license='BSD',
@@ -70,5 +70,6 @@ setup(
     extras_require={
         'test': ['pytest', 'pytest-cov', 'coveralls', 'beautifulsoup4', 'hypothesis'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
+        'deploy': ['bumpversion'],
     }
 )
