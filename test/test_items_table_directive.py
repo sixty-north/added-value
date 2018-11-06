@@ -3,7 +3,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from natsort import natsort
 
-from source.added_value.util import is_sorted
+from added_value.util import is_sorted
 
 dir_name = Path("test_items_table_directive")
 html_filename = "test_v_level_indexes_v_level_sort_orders_and_v_level_visibility.html"

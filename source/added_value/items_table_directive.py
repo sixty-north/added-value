@@ -9,7 +9,7 @@ from docutils.statemachine import StringList
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
-from added_value.grammatical_conjunctions import conjunction
+from added_value.grammatical_conjunctions import list_conjunction
 from added_value.util import run_length_encode
 from source.added_value.multisort import asc, dec, as_is
 from source.added_value.non_string_iterable import NonStringIterable
@@ -136,7 +136,7 @@ class ItemsTableDirective(Directive):
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
                     V_LEVEL_VISIBILITY_OPTION,
                     text,
-                    conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
+                    list_conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
                 )
             )
 
@@ -158,7 +158,7 @@ class ItemsTableDirective(Directive):
                 "Could not interpret option {} {!r}. Items must each be one of {}".format(
                     H_LEVEL_VISIBILITY_OPTION,
                     text,
-                    conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
+                    list_conjunction(list(map(repr, VISIBILITIES.keys())), "or"),
                 )
             )
 

@@ -1,4 +1,4 @@
-def conjunction(sequence, word):
+def list_conjunction(sequence, word):
     if len(sequence) == 0:
         text = ""
     elif len(sequence) == 1:
