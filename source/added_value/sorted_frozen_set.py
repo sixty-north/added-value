@@ -13,7 +13,7 @@ class SortedFrozenSet(Sequence, Set):
 
     def __contains__(self, item):
         try:
-            self.index(item)
+            self.index(item, )
             return True
         except ValueError:
             return False
@@ -36,7 +36,7 @@ class SortedFrozenSet(Sequence, Set):
             return False
         return self._items == rhs._items
 
-    def index(self, item):
+    def index(self, item, **kwargs):
         # TODO: Add support for start and stop
         index = bisect_left(self._items, item)
         if (index != len(self._items)) and self._items[index] == item:

@@ -24,9 +24,3 @@ def topological_sort(dependency_pairs):
                 ordered.append(t)
     cyclic = [n for n, heads in num_heads.items() if heads]
     return Results(ordered, cyclic)
-
-
-if __name__ == "__main__":
-    print(topological_sort("ab ba".split()))
-    print(topological_sort("ah bg cf ch di ed fb fg hd he ib".split()))
-    print(topological_sort("ah bg cf ch di ed fb fg hd he ib fc".split()))
