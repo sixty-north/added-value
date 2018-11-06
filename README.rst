@@ -24,7 +24,7 @@ Build status:
     :alt: Documentation Status
 
 .. image:: https://coveralls.io/repos/github/sixty-north/added-value/badge.svg?branch=master
-    :target: https://coveralls.io/github/sixty-north/segpy?branch=master
+    :target: https://coveralls.io/github/sixty-north/added-value?branch=master
 
 Installation
 ============

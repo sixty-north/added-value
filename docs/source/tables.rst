@@ -1,6 +1,6 @@
-======
-Tables
-======
+================
+Embedding Tables
+================
 
 Directive: items-table – embed sequences and mappings as tables
 ===============================================================
