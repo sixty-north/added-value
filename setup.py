@@ -25,7 +25,7 @@ def read(name, **kwargs):
 
 def read_version():
     "Read the `(version-string, version-info)` from `added_value/version.py`."
-    version_file = local_file('added_value', 'version.py')
+    version_file = local_file('source', 'added_value', 'version.py')
     local_vars = {}
     with open(version_file) as handle:
         exec(handle.read(), {}, local_vars)  # pylint: disable=exec-used
@@ -42,6 +42,7 @@ install_requires = [
 setup(
     name='added-value',
     packages=['added_value'],
+    package_dir={'added_value':'source'},
     version = read_version()[0],
     url='https://github.com/sixty-north/added-value',
     download_url="https://pypi.python.org/pypi/added-value",
