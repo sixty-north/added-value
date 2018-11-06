@@ -68,7 +68,7 @@ setup(
     install_requires=install_requires,
     requires=install_requires,
     extras_require={
-        'test': ['pytest', 'sphinx-testing', 'beautifulsoup4'],
+        'test': ['pytest', 'sphinx-testing', 'beautifulsoup4', 'hypothesis'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
     }
 )
