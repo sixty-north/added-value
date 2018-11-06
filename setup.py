@@ -2,8 +2,7 @@
 import os
 import io
 
-from setuptools import setup
-
+from setuptools import setup, find_packages
 
 with open('README.rst', 'r') as readme:
     long_description = readme.read()
@@ -41,8 +40,8 @@ install_requires = [
 
 setup(
     name='added-value',
-    packages=['added_value'],
-    package_dir={'added_value':'source'},
+    packages=find_packages(where='source'),
+    package_dir={'': 'source'},
     version = read_version()[0],
     url='https://github.com/sixty-north/added-value',
     download_url="https://pypi.python.org/pypi/added-value",
