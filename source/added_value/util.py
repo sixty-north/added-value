@@ -1,4 +1,4 @@
-from itertools import chain, repeat, islice, zip_longest, tee
+from itertools import chain, repeat, islice, zip_longest, tee, groupby
 
 
 def pad_infinite(iterable, padding=None):
@@ -57,3 +57,7 @@ def extended_unchain(iterable, box=list):
 
 def empty_iterable():
     yield from ()
+
+
+def run_length_encode(items):
+    return ((key, len(list(group))) for key, group in groupby(items))

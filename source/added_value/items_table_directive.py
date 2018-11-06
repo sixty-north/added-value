@@ -10,6 +10,7 @@ from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
 from added_value.grammatical_conjunctions import conjunction
+from added_value.util import run_length_encode
 from source.added_value.multisort import asc, dec, as_is
 from source.added_value.non_string_iterable import NonStringIterable
 from source.added_value.tabulator import tabulate, is_rectangular, size
@@ -273,10 +274,24 @@ class ItemsTableDirective(Directive):
         num_rows, num_cols = size(rectangular_rows)
         return rectangular_rows, num_cols
 
-    def augment_cells(self, rows, source):
-        """Convert each cell into a tuple suitable for consumption by build_table.
+    def augment_cells(self, rows, source, *, span):
+        return self.augment_cells_span(rows, source) if span else self.augment_cells_no_span(rows, source)
 
-        I think this has to tabulate with cell spans, but I'm not sure, and we don't need it.
+    def augment_cells_span(self, rows, source):
+        # TODO: Hardwired str transform.
+        # 4-tuple: morerows, morecols, offset, cellblock
+        # - morerows: The number of additional rows this cells spans
+        # - morecols: The number of additional columns this cell spans
+        # - offset: Offset from the line-number at the start of the table
+        # - cellblock: The contents of the cell
+        return [
+            [(0, span - 1, 0, StringList(str(cell).splitlines(), source=source))
+             for cell, span in run_length_encode(row)]
+            for row in rows
+        ]
+
+    def augment_cells_no_span(self, rows, source):
+        """Convert each cell into a tuple suitable for consumption by build_table.
         """
         # TODO: Hardwired str transform.
         # 4-tuple: morerows, morecols, offset, cellblock
@@ -288,6 +303,7 @@ class ItemsTableDirective(Directive):
             [(0, 0, 0, StringList(str(cell).splitlines(), source=source)) for cell in row]
             for row in rows
         ]
+
 
     def run(self):
 
@@ -316,8 +332,8 @@ class ItemsTableDirective(Directive):
         table_head.extend(rows[: self.header_rows])
         table_body = rows[self.header_rows :]
 
-        table_head = self.augment_cells(table_head, source=prefixed_name)
-        table_body = self.augment_cells(table_body, source=prefixed_name)
+        table_head = self.augment_cells(table_head, source=prefixed_name, span=True)
+        table_body = self.augment_cells(table_body, source=prefixed_name, span=False)
 
         table = (col_widths, table_head, table_body)
         table_node = self.state.build_table(
