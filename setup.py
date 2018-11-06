@@ -70,6 +70,6 @@ setup(
     extras_require={
         'test': ['pytest', 'pytest-cov', 'coveralls', 'beautifulsoup4', 'hypothesis'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
-        'deploy': ['bumpversion'],
+        'deploy': ['bumpversion', 'twine', 'wheel'],
     }
 )

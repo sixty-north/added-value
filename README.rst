@@ -40,3 +40,40 @@ The package supports Python 3 only. To install::
 
   $ pip install added-value
 
+
+
+Development
+===========
+
+Maintenance
+-----------
+
+::
+
+  $ pip install -e .
+
+
+
+Testing
+-------
+
+::
+
+  $ pip install -e .[test]
+  $ pytest --cov=source tests
+
+
+Documentation
+-------------
+
+  $ pip install -e .[docs]
+  $ cd docs
+  $ make html
+
+
+Release
+-------
+
+  $ pip install -e .[deploy]
+  $ bumpversion minor
+  $ twine upload --config-file <path>/sixty-north.pypirc dist/*
