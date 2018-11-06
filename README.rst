@@ -2,12 +2,14 @@
 Added Value
 ===========
 
-A Sphinx extension for embedded representations of Python object values into documentation.
+A Sphinx extension for embedded *values* of Python object values into documentation as text, lists
+or tables.
 
-Added-value allows the *values* of Python objects to be incorporated into documentation.
-This is achieved by adding new roles and directives which refer to Python objects in the
-code being documented, much in the same way as the standard autodoc and autosummary
-extensions work.
+This is achieved by adding new roles and directives which refer to Python objects which contain
+the values to be represented. The extension provides roles for embedded single and lists of values,
+and a sophisticated directive for rendering complex data structures like lists of dictionaries as
+tables.
+
 
 Status
 ======
@@ -36,12 +38,3 @@ The package supports Python 3 only. To install::
 
   $ pip install added-value
 
-
-What is Added Value?
-====================
-
-Added value is a plugin to the Sphinx documentation tools which adds roles and directive for
-embedding the *values* of Python objects into the documentation. This allows numbers, strings,
-lists and more complex data structures to be rendered as text or tables.
-
-For full details, see the documentation.
