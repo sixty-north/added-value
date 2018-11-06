@@ -2,7 +2,7 @@
 Added Value
 ===========
 
-A Sphinx extension for embedded *values* of Python object values into documentation as text, lists
+A Sphinx extension for embedding Python object *values* into documentation as text, lists
 or tables.
 
 This is achieved by adding new roles and directives which refer to Python objects which contain
@@ -20,7 +20,7 @@ Build status:
     :target: https://travis-ci.org/sixty-north/added-value
 
 .. image:: https://readthedocs.org/projects/added-value/badge/?version=latest
-    :target: http://segpy.readthedocs.org/en/latest/?badge=latest
+    :target: https://added-value.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 .. image:: https://coveralls.io/repos/github/sixty-north/added-value/badge.svg?branch=master

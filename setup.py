@@ -71,5 +71,9 @@ setup(
         'test': ['pytest', 'pytest-cov', 'coveralls', 'beautifulsoup4', 'hypothesis'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
         'deploy': ['bumpversion', 'twine', 'wheel'],
+    },
+    project_urls={
+        "Source": "https://github.com/sixty-north/added-value",
+        "Documentation": "https://added-value.readthedocs.io/en/latest/",
     }
 )
