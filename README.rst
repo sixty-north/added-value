@@ -76,4 +76,6 @@ Release
 
   $ pip install -e .[deploy]
   $ bumpversion minor
+  $ python setup.py sdist bdist_wheel
   $ twine upload --config-file <path>/sixty-north.pypirc dist/*
+  $ git push origin
