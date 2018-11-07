@@ -1,11 +1,11 @@
 from collections import Mapping, deque
 from itertools import product, chain, repeat
 
-from source.added_value.items_table_directive import NonStringIterable
-from source.added_value.multisort import tuplesorted
-from source.added_value.sorted_frozen_set import SortedFrozenSet
-from source.added_value.toposet import TopoSet
-from source.added_value.util import unchain, empty_iterable
+from added_value.items_table_directive import NonStringIterable
+from added_value.multisort import tuplesorted
+from added_value.sorted_frozen_set import SortedFrozenSet
+from added_value.toposet import TopoSet
+from added_value.util import unchain, empty_iterable
 
 depth_marker = object()
 ROOT = object()

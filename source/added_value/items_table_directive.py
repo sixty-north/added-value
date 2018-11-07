@@ -11,9 +11,9 @@ from sphinx.ext.autosummary import import_by_name
 
 from added_value.grammatical_conjunctions import list_conjunction
 from added_value.util import run_length_encode
-from source.added_value.multisort import asc, dec, as_is
-from source.added_value.non_string_iterable import NonStringIterable
-from source.added_value.tabulator import tabulate, is_rectangular, size
+from added_value.multisort import asc, dec, as_is
+from added_value.non_string_iterable import NonStringIterable
+from added_value.tabulator import tabulate, is_rectangular, size
 
 CELL_FORMATS_OPTION = "cell-formats"
 HEADER_OPTION = "header"
