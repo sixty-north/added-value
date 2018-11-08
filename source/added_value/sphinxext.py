@@ -1,5 +1,6 @@
 from added_value.all_items_role import all_items_role
 from added_value.any_items_role import any_items_role
+from added_value.definition_items_list_directive import DefinitionItemsListDirective
 from added_value.enumerated_items_list_directive import EnumeratedItemsListDirective
 from added_value.format_role import format_role
 from added_value.items_table_directive import ItemsTableDirective
@@ -20,6 +21,7 @@ def setup(app):
     app.add_role("any-items", any_items_role)
     app.add_directive("bullet-items-list", BulletItemsListDirective)
     app.add_directive("enumerated-items-list", EnumeratedItemsListDirective)
+    app.add_directive("definition-items-list", DefinitionItemsListDirective)
     app.add_directive("items-table", ItemsTableDirective)
 
     return {"version": __version__}

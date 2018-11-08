@@ -48,8 +48,8 @@ two items.  Each item is rendered by conversion to string using the string const
 which ultimately called the ``__str__()`` special method on the item.
 
 
-Directive: bullet-items-list - embed a series of items as an unordered list
-------------------------------------------------------------------------------
+Directive: bullet-items-list - embed a series of items as a bulleted list
+-------------------------------------------------------------------------
 
 ::
 
@@ -64,8 +64,8 @@ Precious metals include:
 .. bullet-items-list:: materials.metals
 
 
-Directive: enumerated-items-list - embed a series of items as a ordered list
-----------------------------------------------------------------------------
+Directive: enumerated-items-list - embed a series of items as a numbered
+------------------------------------------------------------------------
 
 ::
 
@@ -81,3 +81,19 @@ Precious metals include:
    :sort-order: asc
 
 
+Directive: definitions-items-list - embed a mapping
+---------------------------------------------------
+
+::
+
+    Abbreviations of months and their definitions:
+
+    .. definition-items-list:: cal.month_abbreviations
+        :sort-order: asc
+
+which gives:
+
+Abbreviations of months and their definitions:
+
+.. definition-items-list:: cal.month_abbreviations
+   :sort-order: asc

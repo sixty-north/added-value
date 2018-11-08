@@ -32,3 +32,18 @@ october_2018 = [
     [22, 23, 24, 25, 26, 27, 28],
     [29, 30, 31, 1, 2, 3, 4],
 ]
+
+month_abbreviations = {
+    "Jan": "January",
+    "Feb": "February",
+    "Mar": "March",
+    "Apr": "April",
+    "May": "May",
+    "Jun": "June",
+    "Jul": "July",
+    "Aug": "August",
+    "Sep": "September",
+    "Oct": "October",
+    "Nov": "November",
+    "Dec": "December",
+}
