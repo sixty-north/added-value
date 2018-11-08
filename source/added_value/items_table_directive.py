@@ -3,6 +3,7 @@ from __future__ import division
 import csv
 
 import natsort
+
 from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import unchanged_required, unchanged
 from docutils.statemachine import StringList

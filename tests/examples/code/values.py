@@ -110,3 +110,7 @@ OPCODES =  {
     TSTB:  { INH: 0x5D,                                                                     },
     TST:   {                           DIR: 0x0D,   IDX: 0x6D,   EXT: 0x7D,                 },
 }
+
+class MyClass:
+
+    class_attribute = 89
