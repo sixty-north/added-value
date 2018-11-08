@@ -46,3 +46,38 @@ which gives:
 Note that ``:all-items:`` uses the English "and" as the coordinating conjunction between the final
 two items.  Each item is rendered by conversion to string using the string constructor ``str()``
 which ultimately called the ``__str__()`` special method on the item.
+
+
+Directive: bullet-items-list - embed a series of items as an unordered list
+------------------------------------------------------------------------------
+
+::
+
+    Precious metals include:
+
+    .. bullet-items-list:: materials.metals
+
+which gives:
+
+Precious metals include:
+
+.. bullet-items-list:: materials.metals
+
+
+Directive: enumerated-items-list - embed a series of items as a ordered list
+----------------------------------------------------------------------------
+
+::
+
+    Precious metals include:
+
+    .. enumerated-items-list:: materials.metals
+
+which gives:
+
+Precious metals include:
+
+.. enumerated-items-list:: materials.metals
+   :sort-order: asc
+
+
