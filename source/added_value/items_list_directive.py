@@ -60,7 +60,7 @@ DEFAULT_SORT_ORDERS = {
     DEFINITION_LIST_TYPE: AS_IS,
 }
 
-DEFAULT_ORDINAL_BASE = 0
+DEFAULT_ORDINAL_BASE = 1
 
 
 class ItemsListDirective(Directive):
@@ -179,9 +179,11 @@ class ItemsListDirective(Directive):
         inner_ordinal_bases,
     ):
         if self.is_leaf_list(inner_list_types):
-            child_keys, child_values, child_nodes = self.render_leaves(obj, sort_order, ordinal_base)
+            child_ordinals, child_keys, child_values, child_nodes = self.render_leaves(
+                obj, sort_order, ordinal_base
+            )
         else:
-            child_keys, child_values, child_nodes = self.render_nested_list(
+            child_ordinals, child_keys, child_values, child_nodes = self.render_nested_list(
                 obj,
                 sort_order,
                 ordinal_base,
@@ -191,7 +193,7 @@ class ItemsListDirective(Directive):
                 inner_sort_orders,
                 inner_ordinal_bases,
             )
-        return list(child_keys), list(child_values), list(child_nodes)
+        return list(child_ordinals), list(child_keys), list(child_values), list(child_nodes)
 
     def render_nested_list(
         self,
@@ -204,7 +206,6 @@ class ItemsListDirective(Directive):
         inner_sort_orders,
         inner_ordinal_bases,
     ):
-        # Internal lists
         sort_key = SORT_ORDERS[sort_order]
 
         if isinstance(obj, Mapping):
@@ -214,7 +215,7 @@ class ItemsListDirective(Directive):
         else:
 
             sorted_items = sorted(
-                enumerate(obj, ordinal_base),
+                enumerate(obj, start=0),  # Original position
                 key=lambda item: sort_key.func(item[1]),
                 reverse=sort_key.reverse,
             )
@@ -222,6 +223,7 @@ class ItemsListDirective(Directive):
 
         item_nodes = [
             (
+                ordinal,
                 key,
                 value,
                 self.render_list(
@@ -233,27 +235,36 @@ class ItemsListDirective(Directive):
                     inner_ordinal_bases,
                 ),
             )
-            for key, value in zip(sorted_keys, sorted_values)
+            for ordinal, (key, value) in enumerate(
+                zip(sorted_keys, sorted_values), start=ordinal_base
+            )
         ]
         return zip(*item_nodes)
 
     def render_leaves(self, obj, sort_order, ordinal_base):
-        # Leaf elements
         if isinstance(obj, Mapping):
             key_value_pairs = obj.items()
         elif isinstance(obj, Sequence):
-            key_value_pairs = enumerate(obj, ordinal_base)
+            key_value_pairs = enumerate(obj, start=0)
         else:
-            key_value_pairs = enumerate(list(obj), ordinal_base)
-        items = [
-            (key, value, self.leaf_format.format(k=key, v=value)) for key, value in key_value_pairs
-        ]
+            key_value_pairs = enumerate(list(obj), start=0)
+
         sort_key = TEXT_SORT_ORDERS[sort_order]
 
+        # TODO: Allow specification of the sort key
         sorted_items = sorted(
-            items, key=lambda item: sort_key.func(item[2]), reverse=sort_key.reverse
+            key_value_pairs, key=lambda item: sort_key.func(item[1]), reverse=sort_key.reverse
         )
-        item_nodes = [(key, value, nodes.paragraph(text=text)) for key, value, text in sorted_items]
+
+        item_nodes = [
+            (
+                ordinal,
+                key,
+                value,
+                nodes.paragraph(text=self.leaf_format.format(o=ordinal, k=key, v=value)),
+            )
+            for ordinal, (key, value) in enumerate(sorted_items, start=ordinal_base)
+        ]
         return zip(*item_nodes)
 
     def add_global_attributes(self, list_node):
@@ -265,26 +276,6 @@ class ItemsListDirective(Directive):
     def render_list(
         self, obj, list_types, key_formats, internal_formats, sort_orders, ordinal_bases
     ):
-        """Interpret the given Python object as a table.
-
-            Args:
-                obj: A sequence (later a mapping, too)
-
-                inner_key_formats: A list of formats to apply to each level of list
-                    For bullet-lists: the bullet symbol. One of “*”, “+”, “-”, “•”, “‣”, or “⁃”
-                    For enumerated-lists, the initial enumerator. 1, A, (1), A), i), etc.
-                    For definition-lists, a format string for the key containing no more than two
-                        replacement fields called {k} and {v}, such as "{k}"
-                inner_list_types: A list of list-types to apply to each level of the list. Each item
-                    must be one of "bullet", "enumerated", "definition"
-                inner_internal_formats: A list of formats to apply to each level of list. Each value must be
-                    a format string containing no more than two replacement fields, called {k} and {v}.
-            Returns:
-                A list of lists represents rows of cells.
-
-            Raises:
-                TypeError: If the type couldn't be interpreted as a table.
-            """
         if not isinstance(obj, NonStringIterable):
             raise self.error("Cannot make a list from object {!r}".format(obj))
 
@@ -337,7 +328,7 @@ class ItemsListDirective(Directive):
         list_node = nodes.bullet_list()
         list_node["bullet"] = key_format
 
-        child_keys, child_values, child_nodes = self.render_child_nodes(
+        child_ordinals, child_keys, child_values, child_nodes = self.render_child_nodes(
             obj,
             sort_order,
             ordinal_base,
@@ -348,10 +339,12 @@ class ItemsListDirective(Directive):
             inner_ordinal_bases,
         )
 
-        for key, value, child_node in zip(child_keys, child_values, child_nodes):
+        for ordinal, key, value, child_node in zip(
+            child_ordinals, child_keys, child_values, child_nodes
+        ):
             list_item_node = nodes.list_item()
 
-            header_text = internal_format.format(k=key, v=value)
+            header_text = internal_format.format(o=ordinal, k=key, v=value)
             if header_text and not header_text.isspace():
                 list_item_node += nodes.paragraph(text=header_text)
 
@@ -397,7 +390,7 @@ class ItemsListDirective(Directive):
         if start != 1:
             list_node["start"] = start
 
-        child_keys, child_values, child_nodes = self.render_child_nodes(
+        child_ordinals, child_keys, child_values, child_nodes = self.render_child_nodes(
             obj,
             sort_order,
             ordinal_base,
@@ -409,10 +402,12 @@ class ItemsListDirective(Directive):
         )
 
         list_node["bullet"] = key_format
-        for key, value, child_node in zip(child_keys, child_values, child_nodes):
+        for ordinal, key, value, child_node in zip(
+            child_ordinals, child_keys, child_values, child_nodes
+        ):
             list_item_node = nodes.list_item()
 
-            header_text = internal_format.format(k=key, v=value)
+            header_text = internal_format.format(o=ordinal, k=key, v=value)
             if header_text and not header_text.isspace():
                 list_item_node += nodes.paragraph(text=header_text)
 
@@ -440,7 +435,7 @@ class ItemsListDirective(Directive):
                 )
             )
 
-        child_keys, child_values, child_nodes = self.render_child_nodes(
+        child_ordinals, child_keys, child_values, child_nodes = self.render_child_nodes(
             obj,
             sort_order,
             ordinal_base,
@@ -452,8 +447,8 @@ class ItemsListDirective(Directive):
         )
 
         term_nodes = [
-            nodes.term("", "", nodes.Text(key_format.format(k=key, v=value)))
-            for key, value in zip(child_keys, child_values)
+            nodes.term("", "", nodes.Text(key_format.format(o=ordinal, k=key, v=value)))
+            for ordinal, key, value in zip(child_ordinals, child_keys, child_values)
         ]
 
         list_node = nodes.definition_list()

@@ -51,11 +51,6 @@ which ultimately called the ``__str__()`` special method on the item.
 Directive: items-list – embed collections as lists
 --------------------------------------------------
 
-.. items-list:: cal.quarter_months
-   :list-types: bullet, bullet
-   :internal-formats: {k}, {k}
-   :ordinal-bases: 5, 17
-
 Bullet lists
 ~~~~~~~~~~~~
 
@@ -203,17 +198,19 @@ so it's usually easiest to stay with a asterisk ``*``.  The default is ``*``.
 For *enumerated lists*, the options are arabic numerals ``1``, upper-case letters ``A``,
 lower-case letters ``A``, lower-case Roman numerals ``i``, upper-case Roman numerals ``I``. These
 can be combined with various prefix and suffix puncuation, so ``(A)``, ``1.`` ``i:`` are all valid.
-Furthermore, the initial ordinal can be specified with, for example, ``iv.``. The extent to which
+Furthermore, the starting value can be specified with, for example, ``iv.``. The extent to which
 the enumerator format is respected is very much a function of the theme or stylesheets in use, and
 some popular themes, such as the Read The Docs theme, are somewhat defective in this area. The
 default is ``1.``
 
 For *definition lists*, the key-format is a string containing Python-style replacement fields
-delimited by curly braces. Two replacement values are supported: ``{k}`` is the key of the
-current item from the mapping, and ``{v}`` is the value of the current item from the mapping. These
-may be used in any combination and the format specifiers support any options supported by the
-underlying key and value types in the dictionary. See the format specifier mini-language in the
-Python documentation for more details. The default is ``{k}``.
+delimited by curly braces. Three replacement values are supported: ``{k}`` is the key of the
+current item from the mapping; the ``{v}`` replacement field is the value of the current item from
+the mapping. These may be used in any combination and the format specifiers support any options
+supported by the underlying key and value types in the dictionary. The ``{o}`` replacement field
+is the one-based integer ordinal *after sorting*. Any features from the Python format specifier
+mini-language can be used. See the Python documentation for more details. The default is key format
+for defintion lists is ``{k}``.
 
 
 Controlling internal and leaf node formats
@@ -225,11 +222,12 @@ and the values of the innermost collections represent the *leaf* nodes.
 
 The formats of the internal nodes are controlled by the ``:internal-formats:`` option, which accepts
 a comma-separated list of formats, one for each level. Each value format is a string containing
-Python-style replacement fields delimited by curly braces. Two replacement values are supported:
+Python-style replacement fields delimited by curly braces. Three replacement values are supported:
 ``{k}`` is the key of the current item from the mapping, or for sequences and other iterables, a
-zero-based index; the ``{v}`` replacement field is the value of the current item from the
-collection. The default *internal* format for mapping collections such as ``dict`` is ``{k}``,
-whereas the default for other collections such as ``list`` is empty.
+zero-based index *before sorting*; the ``{v}`` replacement field is the value of the current item
+from the collection; the ``{o}`` replacement field is the one-based ordinal integer *after sorting*.
+The default *internal* format for mapping collections such as ``dict`` is ``{k}``, whereas the
+default for other collections such as ``list`` is empty.
 
 ::
 
@@ -248,10 +246,11 @@ whereas the default for other collections such as ``list`` is empty.
    :internal-formats: "Country: {k}", "Statistic: {k}", "Period: {k}"
 
 The leaf-node formats are controlled with the ``:leaf-format:`` option. This accepts a single
-Python style format-string containing curly-brace delimited replacements fields. Two replacement
+Python style format-string containing curly-brace delimited replacements fields. Three replacement
 values are supported: ``{k}`` is the key of the current item from the mapping, or for sequences and
-other iterables, a zero-based index; the ``{v}`` replacement field is the value of the current item
-from the collection. The default *leaf* format is ``{v}``.
+other iterables, a zero-based index *before sorting*; the ``{v}`` replacement field is the value of
+the current item from the collection; the ``{o}`` field is the integer ordinal *after sorting*.
+The default *leaf* format is ``{v}``.
 
 ::
 
@@ -327,9 +326,75 @@ we get this:
    :list-types: bullet, bullet
 
 Notice that the *internal-format* for non-mapping types defaults to being empty, so the list indexes
-not displayed.
+not displayed.  Using the ``{o}`` format-specifier in the *internal-format* for the outer list, we
+can include the one-based ordinal number in the string.
 
 .. items-list:: cal.quarter_months
    :list-types: bullet, bullet
-   :internal-formats: {k}, {k}
-   :ordinal-bases: 5, 17
+   :internal-formats: "Quarter {o}", ""
+
+Indexes, keys and ordinals
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Various numbering systems are in play with lists of sequences, which can make things confusing.
+Let's return to our list of metals:
+
+.. literalinclude:: ../code/materials.py
+
+This simple list contains three items at indexes zero, one and two.
+
+We can configure an items list to display the various numbering systems in play:
+
+::
+
+    .. items-list:: materials.metals
+       :list-types: enumerated
+       :key-formats: iv.
+       :leaf-format: value={v}, ordinal={o}, key={k}
+
+.. items-list:: materials.metals
+   :list-types: enumerated
+   :key-formats: iv.
+   :leaf-format: value={v}, ordinal={o}, key={k}
+
+Here we have the *enumerator* values starting with Roman numeral ``iv``, the *ordinal* values
+which give a one-based position in the list (for display purposes we usually want one-based indexes)
+and the *key*, which is the original list index (or dictionary key).
+
+The ordinal *always* increases from top to bottom, but the key is preserved, even if we sort the
+items.
+
+::
+
+    .. items-list:: materials.metals
+       :list-types: enumerated
+       :key-formats: iv.
+       :leaf-format: value={v}, ordinal={o}, key={k}
+       :sort-orders: asc
+
+.. items-list:: materials.metals
+   :list-types: enumerated
+   :key-formats: iv.
+   :leaf-format: value={v}, ordinal={o}, key={k}
+   :sort-orders: asc
+
+The ordinal base can be modified independently using the ``ordinal-bases`` option, which defaults
+to one. Here we set it to zero:
+
+::
+
+    .. items-list:: materials.metals
+       :list-types: enumerated
+       :key-formats: iv.
+       :leaf-format: value={v}, ordinal={o}, key={k}
+       :sort-orders: asc
+       :ordinal-bases: 0
+
+.. items-list:: materials.metals
+   :list-types: enumerated
+   :key-formats: iv.
+   :leaf-format: value={v}, ordinal={o}, key={k}
+   :sort-orders: asc
+   :ordinal-bases: 0
+
+
