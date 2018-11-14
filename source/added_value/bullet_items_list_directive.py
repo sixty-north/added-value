@@ -70,6 +70,7 @@ class BulletItemsListDirective(Directive):
         )
 
         list_node = nodes.bullet_list()
+        list_node["bullet"] = "*"
         for item_text in items:
             item_node = nodes.list_item()
             list_node += item_node

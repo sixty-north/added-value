@@ -56,3 +56,5 @@ economic_data = {
         },
     },
 }
+
+usa_economic_data = {country: data for country, data in economic_data.items() if country == "United States"}

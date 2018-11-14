@@ -61,3 +61,6 @@ def empty_iterable():
 
 def run_length_encode(items):
     return ((key, len(list(group))) for key, group in groupby(items))
+
+def key_for_value(d, v):
+    return next(key for key, value in d.items() if value == v)

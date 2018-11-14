@@ -3,6 +3,7 @@ from added_value.any_items_role import any_items_role
 from added_value.definition_items_list_directive import DefinitionItemsListDirective
 from added_value.enumerated_items_list_directive import EnumeratedItemsListDirective
 from added_value.format_role import format_role
+from added_value.items_list_directive import ItemsListDirective
 from added_value.items_table_directive import ItemsTableDirective
 from added_value.str_role import str_role
 from added_value.repr_role import repr_role
@@ -23,5 +24,6 @@ def setup(app):
     app.add_directive("enumerated-items-list", EnumeratedItemsListDirective)
     app.add_directive("definition-items-list", DefinitionItemsListDirective)
     app.add_directive("items-table", ItemsTableDirective)
+    app.add_directive("items-list", ItemsListDirective)
 
     return {"version": __version__}

@@ -39,7 +39,7 @@ VISIBILITIES = {"show": True, "hide": False}
 
 
 class ItemsTableDirective(Directive):
-    """Format a sequence as a table.
+    """Format a data structure as a table.
 
     If the items of the sequence are themselves sequences, they will formatted as rows.
     """
@@ -81,7 +81,7 @@ class ItemsTableDirective(Directive):
             return None
         titles = self.options[V_LEVEL_TITLES_OPTION]
         titles_stream = StringIO(titles)
-        reader = csv.reader(titles_stream, delimiter=",", quotechar='"')
+        reader = csv.reader(titles_stream, delimiter=",", quotechar='"', skipinitialspace=True, doublequote=True)
         titles_row = next(reader)
         stripped_titles = [cell.strip() for cell in titles_row]
         return stripped_titles
@@ -92,7 +92,7 @@ class ItemsTableDirective(Directive):
             return None
         titles = self.options[H_LEVEL_TITLES_OPTION]
         titles_stream = StringIO(titles)
-        reader = csv.reader(titles_stream, delimiter=",", quotechar='"')
+        reader = csv.reader(titles_stream, delimiter=",", quotechar='"', skipinitialspace=True, doublequote=True)
         titles_row = next(reader)
         stripped_titles = [cell.strip() for cell in titles_row]
         return stripped_titles
