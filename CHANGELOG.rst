@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next-version) – Adds the items-list directive for rendering arbitrarily nested lists and
+0.13.0 – Adds the items-list directive for rendering arbitrarily nested lists and
 dictionaries as bullet lists, enumerated lists and definition lists.  This work is very new and
 largely untested with little experience of whether it has the right combination of balance of
 features.
