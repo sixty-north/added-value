@@ -6,10 +6,12 @@ import natsort
 
 from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import unchanged_required, unchanged
+from docutils.parsers.rst.directives.tables import align
 from docutils.statemachine import StringList
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
+from added_value.common_options import CLASS_OPTION, ALIGN_OPTION, NAME_OPTION
 from added_value.grammatical_conjunctions import list_conjunction
 from added_value.util import run_length_encode
 from added_value.multisort import asc, dec, as_is
@@ -30,6 +32,7 @@ V_LEVEL_VISIBILITY_OPTION = "v-level-visibility"
 H_LEVEL_VISIBILITY_OPTION = "h-level-visibility"
 V_LEVEL_INDEXES_OPTION = "v-level-indexes"
 H_LEVEL_INDEXES_OPTION = "h-level-indexes"
+
 
 _natural = natsort.natsort_keygen()
 
@@ -61,6 +64,9 @@ class ItemsTableDirective(Directive):
         V_LEVEL_SORT_ORDERS_OPTION: unchanged,
         CELL_FORMATS_OPTION: unchanged_required,
         WIDTHS_OPTION: directives.value_or(("auto", "grid"), directives.positive_int_list),
+        CLASS_OPTION: directives.class_option,
+        ALIGN_OPTION: align,
+        NAME_OPTION: unchanged,
     }
 
     @property

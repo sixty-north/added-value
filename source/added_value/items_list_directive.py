@@ -8,11 +8,13 @@ import natsort
 from docutils import nodes
 from docutils.parsers.rst.states import Body
 
-from docutils.parsers.rst import Directive
+from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import unchanged_required, unchanged
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
+from added_value import common_options
+from added_value.common_options import NAME_OPTION, CLASS_OPTION
 from added_value.grammatical_conjunctions import list_conjunction
 from added_value.multisort import asc, dec, as_is
 from added_value.non_string_iterable import NonStringIterable
@@ -76,6 +78,8 @@ class ItemsListDirective(Directive):
         INTERNAL_FORMATS_OPTION: unchanged,
         LEAF_FORMAT_OPTION: unchanged,
         ORDINAL_BASES_OPTION: unchanged,
+        CLASS_OPTION: directives.class_option,
+        NAME_OPTION: unchanged,
     }
 
     @property
