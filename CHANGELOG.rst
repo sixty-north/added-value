@@ -2,6 +2,10 @@
 Changelog
 =========
 
+$(next-version) – Fixes a bug in display of table headers.
+
+0.14.0 – Adds support for class and name options on directives.
+
 0.13.0 – Adds the items-list directive for rendering arbitrarily nested lists and
 dictionaries as bullet lists, enumerated lists and definition lists.  This work is very new and
 largely untested with little experience of whether it has the right combination of balance of
