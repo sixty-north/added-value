@@ -87,8 +87,8 @@ Data structures such a list-of-lists or list-of-dictionaries can be considered a
 *multi-level*. For example, a list of integers is a single-level data
 structure, a list of list of integers is a two-level data structure, and a list of lists of lists
 is a three- level data structure. Each of these levels can be given a zero-based indexed, called the
-*level index*. So in the case of a list of lists of dictionarues, the outer list has indexes at
-level zero, the inner lists have indexes at level one, and the dictionaties contained within those
+*level index*. So in the case of a list of lists of dictionaries, the outer list has indexes at
+level zero, the inner lists have indexes at level one, and the dictionaries contained within those
 inner lists have indexes at level two.
 
 One easy way to see this is to think about how many successive applications of Python's indexing
@@ -167,7 +167,7 @@ The exact style of header rows depends on the theme in use.
 Specify the number of stub columns
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the ``:stb-columms:`` option to specify the number of leading columns of the table which are to
+Use the ``:stub-columms:`` option to specify the number of leading columns of the table which are to
 be considered as row headers:
 
 ::
