@@ -45,7 +45,9 @@ def extend(iterable, item_factory=lambda: None):
     return chain(iterable, iter(item_factory, object()))
 
 
-def unchain(iterable, box=list):
+def unchain(iterable, box=None):
+    if box is None:
+        box = lambda item: [item]
     return chain(map(box, iterable))
 
 
