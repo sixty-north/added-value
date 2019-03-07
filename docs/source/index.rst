@@ -40,6 +40,7 @@ Using Added Value's ``items-table`` directive, we can embed this into the docume
 ::
 
    .. items-table:: economy.economic_data
+      :title: **Economic Data**
       :v-level-indexes: 0
       :h-level-indexes: 1, 2
       :header-rows: 2
@@ -48,6 +49,7 @@ Using Added Value's ``items-table`` directive, we can embed this into the docume
 which when rendered, looks like this:
 
 .. items-table:: economy.economic_data
+   :title: **Economic Data**
    :v-level-indexes: 0
    :h-level-indexes: 1, 2
    :header-rows: 2

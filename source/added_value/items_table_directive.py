@@ -8,6 +8,7 @@ from docutils.parsers.rst import Directive, directives
 from docutils.parsers.rst.directives import unchanged_required, unchanged
 from docutils.parsers.rst.directives.tables import align
 from docutils.statemachine import StringList
+from docutils import nodes
 from six import StringIO
 from sphinx.ext.autosummary import import_by_name
 
@@ -68,6 +69,10 @@ class ItemsTableDirective(Directive):
         ALIGN_OPTION: align,
         NAME_OPTION: unchanged,
     }
+
+    @property
+    def title(self):
+        return self.options.get(TITLE_OPTION, "")
 
     @property
     def widths(self):
@@ -208,6 +213,17 @@ class ItemsTableDirective(Directive):
                     H_LEVEL_SORT_ORDERS_OPTION, text, ", ".join(SORT_ORDERS.keys())
                 )
             )
+
+    def make_title(self):
+        title_text = self.title
+        if title_text:
+            text_nodes, messages = self.state.inline_text(title_text, self.lineno)
+            title_node = nodes.title(title_text, '', *text_nodes)
+            title_node.source, title_node.line = self.state_machine.get_source_and_line(self.lineno)
+        else:
+            title_node = None
+            messages = []
+        return title_node, messages
 
     def get_column_widths(self, max_cols):
         if isinstance(self.widths, list):
@@ -351,4 +367,8 @@ class ItemsTableDirective(Directive):
             table_node["align"] = self.options.get("align")
         self.add_name(table_node)
 
-        return [table_node]
+        title_node, messages = self.make_title()
+        if title_node:
+            table_node.insert(0, title_node)
+
+        return [table_node] + messages

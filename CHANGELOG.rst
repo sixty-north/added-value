@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) – Fixes a bug in display of table headers which affected the h-level-titles option.
+$(next-version) – Adds missing implementation which prevented table titles from being displayed.
+
+0.14.1 – Fixes a bug in display of table headers which affected the h-level-titles option.
 Also minor fixes to the documentation.
 
 0.14.0 – Adds support for class and name options on directives.
