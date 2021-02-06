@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Adds support for the items-toc directive. Fixes formatting in README.rst.
+$(next-version) - ...
+
+0.15.0 - Adds support for the items-toc directive. Fixes formatting in README.rst.
 
 0.14.2 – Adds missing implementation which prevented table titles from being displayed.
 
