@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) – Adds missing implementation which prevented table titles from being displayed.
+$(next-version) - Adds support for the items-toc directive. Fixes formatting in README.rst.
+
+0.14.2 – Adds missing implementation which prevented table titles from being displayed.
 
 0.14.1 – Fixes a bug in display of table headers which affected the h-level-titles option.
 Also minor fixes to the documentation.

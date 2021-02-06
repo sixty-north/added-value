@@ -60,12 +60,13 @@ Reference Documentation
 =======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    single_items
    series_of_items
    tables
+   tocs
 
 Indices and tables
 ==================

@@ -2,7 +2,7 @@ def list_conjunction(sequence, word):
     if len(sequence) == 0:
         text = ""
     elif len(sequence) == 1:
-        text = str(sequence)
+        text = str(sequence[0])
     elif len(sequence) == 2:
         text = "{!s} {} {!s}".format(sequence[0], word, sequence[1])
     else:

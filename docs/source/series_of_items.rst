@@ -144,14 +144,14 @@ Precious metals include:
 Nested lists from nested data structures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``items-list::`` directive can be used to represent hierarchical data structures. This is
+The ``items-list::`` directive can be used to represent hierarchical data structures.
 Consider the following, dictionary of dictionaries of dictionaries:
 
 .. literalinclude:: ../code/economy.py
    :language: python
 
 When displaying, data structures with multiple levels, the type of list to be used at each level
-must be specified as a commas-separated list. In this case the outer list will be a bullet list,
+must be specified as a comma-separated list. In this case the outer list will be a bullet list,
 the intermediate lists will be enumerated lists, and the innermost lists will be definition lists:
 
 ::

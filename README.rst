@@ -66,6 +66,8 @@ Testing
 Documentation
 -------------
 
+::
+
   $ pip install -e .[docs]
   $ cd docs
   $ make html
@@ -73,6 +75,8 @@ Documentation
 
 Release
 -------
+
+::
 
   $ pip install -e .[deploy]
   $ bumpversion minor
