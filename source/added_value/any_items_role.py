@@ -15,7 +15,7 @@ def make_any_items_node(rawtext, app, prefixed_name, obj, parent, modname, optio
     :param module: The name of the module containing obj.
     :param options: Options dictionary passed to role func.
     """
-    text = list_conjunction(obj, "or")
+    text = list_conjunction(list(obj), "or")
     node = nodes.Text(text, rawsource=rawtext)
     return node
 
