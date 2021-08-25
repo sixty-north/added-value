@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next-version) - ...
+0.16.0 - Use a lightly modified ReadTheDocs theme for the documentation.
 
 0.15.0 - Adds support for the items-toc directive. Fixes formatting in README.rst.
 
