@@ -8,6 +8,7 @@
 
 import os
 import sys
+import sphinx_rtd_theme
 
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -31,7 +32,7 @@ sys.path.insert(0, added_value_extension_filepath)
 # -- Project information -----------------------------------------------------
 
 project = u'Added Value'
-copyright = u'2018, Sixty North AS'
+copyright = u'2021, Sixty North AS'
 author = u'Sixty North AS'
 
 # The short X.Y version
@@ -51,6 +52,7 @@ release = u''
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx_rtd_theme',
     'added_value',
 ]
 
@@ -92,7 +94,7 @@ pygments_style = 'sphinx'
 #     html_theme = 'sphinx_rtd_theme'
 #     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-html_theme = 'alabaster'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -104,6 +106,11 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+html_css_files = [
+    'css/theme_extensions.css',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -176,4 +183,4 @@ texinfo_documents = [
 # -- Extension configuration -------------------------------------------------
 
 def setup(app):
-    app.add_stylesheet('theme_extensions.css')
+    pass
