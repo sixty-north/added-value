@@ -3,6 +3,8 @@ from collections import OrderedDict
 
 the_answer = 42
 
+the_question = "What is the answer to Life, the Universe, and Everything?"
+
 tricolon = [
     'life',
     'the Universe',

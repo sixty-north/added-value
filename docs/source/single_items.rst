@@ -66,3 +66,24 @@ The role accepts two items separated by a comma. The first is a reference to the
 embedded. The second is a format specifier. The object being embedded here is a float, but any
 Python object which can be passed to the built-in ``format()`` function can be used. The allowable
 values for the format specifier depend on the type of the object being formatted.
+
+
+Role: literal-repr – embed the string representation of an object as a literal
+------------------------------------------------------------------------------
+
+By using the ``:literal-repr:`` role the alternative Python string representation (usually intended
+for consumption by developers) can be inserted:
+
+::
+
+  By passing the string key, such as :literal-repr:`elements.SILICON_SYMBOL`, to the function the
+  corresponding element name can be retrieved.
+
+which gives:
+
+  By passing the string key, such as :literal-repr:`elements.SILICON_SYMBOL`, to the function the
+  corresponding element name can be retrieved.
+
+Note that the quotes now included in the string, as they are part of the representation of the
+object returned by the built-in ``repr(obj)`` function, which will ultimately invoke the
+``__repr__()`` special method of the object being embedded.
