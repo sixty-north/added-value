@@ -4,6 +4,7 @@ from added_value.format_role import format_role
 from added_value.items_list_directive import ItemsListDirective
 from added_value.items_table_directive import ItemsTableDirective
 from added_value.items_toc_directive import ItemsTableOfContentsDirective
+from added_value.literal_block_directive import LiteralBlockDirective
 from added_value.str_role import str_role
 from added_value.repr_role import repr_role
 from added_value.version import __version__
@@ -21,5 +22,6 @@ def setup(app):
     app.add_directive("items-table", ItemsTableDirective)
     app.add_directive("items-list", ItemsListDirective)
     app.add_directive("items-toc", ItemsTableOfContentsDirective)
+    app.add_directive("literal-block", LiteralBlockDirective)
 
     return {"version": __version__}

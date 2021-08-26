@@ -66,6 +66,7 @@ Reference Documentation
    single_items
    series_of_items
    tables
+   literals
    tocs
 
 Indices and tables

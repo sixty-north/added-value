@@ -1,3 +1,4 @@
+import json
 from collections import OrderedDict
 
 the_answer = 42
@@ -114,3 +115,5 @@ OPCODES =  {
 class MyClass:
 
     class_attribute = 89
+
+json_month_lengths = json.dumps(month_lengths, indent=4)
