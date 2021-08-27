@@ -69,6 +69,27 @@ the ``repr()`` instead, do the conversion in Python code to generate a collectio
 containing what you want.
 
 
+Role: literal-all-items - embed a series of non-contrasting items
+-----------------------------------------------------------------
+
+
+To embed a series of non-contrasting items in a sentence, use the ``:literal-all-items`` role:
+
+::
+
+    Precious metals include :literal-all-items:`materials.metals`.
+
+which gives:
+
+    Precious metals include :literal-all-items:`materials.metals`.
+
+Note that ``:all-items:`` uses the English "and" as the coordinating conjunction between the final
+two items.  Each item is rendered by conversion to string using the string constructor ``str()``
+which ultimately called the ``__str__()`` special method on the item. If you want to use
+the ``repr()`` instead, do the conversion in Python code to generate a collection of strings
+containing what you want.
+
+
 Directive: items-list – embed collections as lists
 --------------------------------------------------
 

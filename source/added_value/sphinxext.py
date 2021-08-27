@@ -9,6 +9,7 @@ from added_value.literal_repr_role import literal_repr_role
 from added_value.literal_str_role import literal_str_role
 from added_value.literal_format_role import literal_format_role
 from added_value.literal_any_items_role import literal_any_items_role
+from added_value.literal_all_items_role import literal_all_items_role
 from added_value.str_role import str_role
 from added_value.repr_role import repr_role
 from added_value.version import __version__
@@ -31,5 +32,6 @@ def setup(app):
     app.add_role("literal-str", literal_str_role)
     app.add_role("literal-format", literal_format_role)
     app.add_role("literal-any-items", literal_any_items_role)
+    app.add_role("literal-all-items", literal_all_items_role)
 
     return {"version": __version__}

@@ -4,8 +4,8 @@ from added_value.grammatical_conjunctions import list_conjunction, list_conjunct
 from added_value.pyobj_role import make_pyobj_role
 
 
-def make_literal_any_items_node(rawtext, app, prefixed_name, obj, parent, modname, options):
-    """Render a Python sequence as a comma-separated list, with an "or" for the final item.
+def make_literal_all_items_node(rawtext, app, prefixed_name, obj, parent, modname, options):
+    """Render a Python sequence as a comma-separated list, with an "and" for the final item.
 
     :param rawtext: Text being replaced with link node.
     :param app: Sphinx application context
@@ -18,7 +18,7 @@ def make_literal_any_items_node(rawtext, app, prefixed_name, obj, parent, modnam
     new_nodes = list_conjunction_parts(
         list(obj),
         separator=", ",
-        conjunction=" or ",
+        conjunction=" and ",
         separator_factory=lambda o: nodes.Text(str(o)),
         item_factory=lambda o: nodes.literal(text=str(o))
 
@@ -27,4 +27,4 @@ def make_literal_any_items_node(rawtext, app, prefixed_name, obj, parent, modnam
     return new_nodes
 
 
-literal_any_items_role = make_pyobj_role(make_literal_any_items_node)
+literal_all_items_role = make_pyobj_role(make_literal_all_items_node)
