@@ -87,3 +87,25 @@ which gives:
 Note that the quotes now included in the string, as they are part of the representation of the
 object returned by the built-in ``repr(obj)`` function, which will ultimately invoke the
 ``__repr__()`` special method of the object being embedded.
+
+
+Role: literal-str – embed the string conversion of an object as a literal
+-------------------------------------------------------------------------
+
+Single values from Python code may be included in this documentation as literals using the
+``:literal-str:`` role, like this:
+
+::
+
+  The atomic weight of carbon-12 is :literal-str:`elements.CARBON_WEIGHT`.
+
+which gives:
+
+  The atomic weight of carbon-12 is :literal-str:`elements.CARBON_WEIGHT`.
+
+
+The value here is a float, but any Python object which can be converted to a string using the built
+string constructor ``str(obj)`` is suitable, which will ultimately invoke the ``__str__()`` special
+method of the object being formatted.
+
+
