@@ -48,6 +48,27 @@ two items.  Each item is rendered by conversion to string using the string const
 which ultimately called the ``__str__()`` special method on the item.
 
 
+Role: literal-any-items – embed a series of alternative items as literals
+-------------------------------------------------------------------------
+
+To embed a series of alternative items in a sentence, use the ``:literal-any-items`` role:
+
+::
+
+  You must select :literal-any-items:`materials.metals` when specifying a material.
+
+which gives:
+
+  You must select :literal-any-items:`materials.metals` when specifying a material.
+
+
+Note that ``:literal-any-items:`` uses the English "or" as the coordinating conjunction between the
+final two items.  Each item is rendered by conversion to string using the string constructor
+``str()`` which ultimately called the ``__str_()`` special method on the item. If you want to use
+the ``repr()`` instead, do the conversion in Python code to generate a collection of strings
+containing what you want.
+
+
 Directive: items-list – embed collections as lists
 --------------------------------------------------
 

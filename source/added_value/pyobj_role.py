@@ -1,3 +1,4 @@
+from collections import Sequence
 from functools import partial
 
 from sphinx.ext.autosummary import import_by_name
@@ -37,7 +38,8 @@ def pyobj_role(make_node, name, rawtext, text, lineno, inliner, options=None, co
         return [prb], [msg]
     app = inliner.document.settings.env.app
     node = make_node(rawtext, app, prefixed_name, obj, parent, modname, options)
-    return [node], []
+    new_nodes = node if isinstance(node, list) else [node]
+    return new_nodes, []
 
 
 def formatted_role(make_node, inliner, rawtext, text, lineno, options=None):
@@ -65,6 +67,6 @@ def formatted_role(make_node, inliner, rawtext, text, lineno, options=None):
             messages = [message]
         else:
             node = make_node(text=formatted_value, rawsource=rawtext)
-            new_nodes = [node]
+            new_nodes = node if isinstance(node, list) else [node]
             messages = []
     return new_nodes, messages

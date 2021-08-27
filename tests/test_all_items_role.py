@@ -12,4 +12,4 @@ def test_base_name_in_html(app):
 def test_all_items_html_contains_value(app):
     app.build()
     html = Path(app.outdir / html_filename).read_text()
-    assert "The answer to life, the Universe, and everything is six times seven." in html
+    assert "The answer to life, the Universe and everything is six times seven." in html
