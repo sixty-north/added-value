@@ -38,3 +38,33 @@ def pyobj_role(make_node, name, rawtext, text, lineno, inliner, options=None, co
     app = inliner.document.settings.env.app
     node = make_node(rawtext, app, prefixed_name, obj, parent, modname, options)
     return [node], []
+
+
+def formatted_role(make_node, inliner, rawtext, text, lineno, options=None):
+    if options is None:
+        options = {}
+
+    name, _, format_spec = tuple(field.strip() for field in text.partition(","))
+    try:
+        prefixed_name, obj, parent, modname = import_by_name(name)
+    except ImportError:
+        message = inliner.reporter.error("Could not locate Python object {}".format(text),
+                                         line=lineno)
+        problem_node = inliner.problematic(rawtext, rawtext, message)
+        new_nodes = [problem_node]
+        messages = [message]
+    else:
+        try:
+            formatted_value = format(obj, format_spec)
+        except ValueError as value_error:
+            message = inliner.reporter.error(
+                "Format error in {}: {}".format(text, value_error), line=lineno
+            )
+            prb = inliner.problematic(rawtext, rawtext, message)
+            new_nodes = [prb]
+            messages = [message]
+        else:
+            node = make_node(text=formatted_value, rawsource=rawtext)
+            new_nodes = [node]
+            messages = []
+    return new_nodes, messages

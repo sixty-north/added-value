@@ -1,10 +1,9 @@
 from docutils import nodes
-from sphinx.ext.autosummary import import_by_name
 
 from added_value.pyobj_role import formatted_role
 
 
-def format_role(name, rawtext, text, lineno, inliner, options=None, content=None):
+def literal_format_role(name, rawtext, text, lineno, inliner, options=None, content=None):
     """Include Python object value, rendering it to text using str.
 
     Returns 2 part tuple containing list of nodes to insert into the
@@ -21,9 +20,11 @@ def format_role(name, rawtext, text, lineno, inliner, options=None, content=None
     :param content: The directive content for customization.
     """
     return formatted_role(
-        make_node=lambda text, rawsource: nodes.Text(text, rawsource=rawsource),
+        make_node=nodes.literal,
         inliner=inliner,
         rawtext=rawtext,
         text=text,
         lineno=lineno
     )
+
+

@@ -56,11 +56,11 @@ By using the ``:format:`` role, you can gain control over the formatting of Pyth
 
 ::
 
-  The value of the mathematic constamt *e* is :format:`math.e, .3f` to three decimal places.
+  The value of the mathematic constant *e* is :format:`math.e, .3f` to three decimal places.
 
 which gives:
 
-  The value of the mathematic constamt *e* is :format:`math.e, .3f` to three decimal places.
+  The value of the mathematic constant *e* is :format:`math.e, .3f` to three decimal places.
 
 The role accepts two items separated by a comma. The first is a reference to the object to be
 embedded. The second is a format specifier. The object being embedded here is a float, but any
@@ -109,3 +109,21 @@ string constructor ``str(obj)`` is suitable, which will ultimately invoke the ``
 method of the object being formatted.
 
 
+Role: literal-format – embed a formatted string representation of an object
+---------------------------------------------------------------------------
+
+By using the ``:literal-format:`` role, you can gain control over the formatting of Python objects
+included in the document as literals.
+
+::
+
+  The value of the mathematic constant *e* is :literal-format:`math.e, .3f` to three decimal places.
+
+which gives:
+
+  The value of the mathematic constant *e* is :literal-format:`math.e, .3f` to three decimal places.
+
+The role accepts two items separated by a comma. The first is a reference to the object to be
+embedded. The second is a format specifier. The object being embedded here is a float, but any
+Python object which can be passed to the built-in ``format()`` function can be used. The allowable
+values for the format specifier depend on the type of the object being formatted.
