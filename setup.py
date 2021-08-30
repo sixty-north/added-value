@@ -35,6 +35,7 @@ install_requires = [
     'sphinx',
     'natsort',
     'six',
+    'les_iterables>=0.6.0'
 ]
 
 
