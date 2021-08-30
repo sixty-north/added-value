@@ -23,7 +23,6 @@ def make_literal_all_items_node(rawtext, app, prefixed_name, obj, parent, modnam
         item_factory=lambda o: nodes.literal(text=str(o))
 
     )
-    print(new_nodes)
     return new_nodes
 
 
