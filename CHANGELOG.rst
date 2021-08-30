@@ -5,7 +5,7 @@ Changelog
 0.20.0 - Adds a literal-repr, literal-str literal-format literal-any-items and
 literal-all-items roles.
 
-0.19.0 - Use a lightly modified ReadTheDocs theme for the documentation. Add the literal-block
+0.20.0 - Use a lightly modified ReadTheDocs theme for the documentation. Add the literal-block
 directive.
 
 0.15.0 - Adds support for the items-toc directive. Fixes formatting in README.rst.

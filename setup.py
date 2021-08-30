@@ -67,7 +67,6 @@ setup(
     platforms='any',
     include_package_data=True,
     install_requires=install_requires,
-    requires=install_requires,
     extras_require={
         'test': ['pytest', 'pytest-cov', 'coveralls', 'beautifulsoup4', 'hypothesis'],
         'docs': ['sphinx', 'sphinx_rtd_theme'],
