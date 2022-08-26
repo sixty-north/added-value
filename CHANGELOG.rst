@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next-version) - Transition from TravisCI to GitHub actions build and support Python 3.10
+0.21.0 - Transition from TravisCI to GitHub actions build and support Python 3.10
 
 0.20.0 - Adds a literal-repr, literal-str literal-format literal-any-items and
 literal-all-items roles.
