@@ -1,4 +1,3 @@
-from collections import Sequence
 from functools import partial
 
 from sphinx.ext.autosummary import import_by_name

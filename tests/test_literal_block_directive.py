@@ -3,13 +3,13 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from tests.examples.code import values
-
 dir_name = Path("test_literal_block_directive")
 html_filename = "test_json_literal.html"
 
 
-def test_base_name_in_html(app):
+
+
+def test_base_name_in_html(app, values):
     app.build()
     html_doc = Path(app.outdir / dir_name / html_filename).read_text()
     text = extract_pre_from_html(html_doc)

@@ -1,4 +1,4 @@
-from collections import MutableSet
+from collections.abc import MutableSet
 from itertools import product
 
 from added_value.toposort import topological_sort, Results

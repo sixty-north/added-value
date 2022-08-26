@@ -1,4 +1,4 @@
-from collections import Mapping
+from collections.abc import Mapping
 
 from sphinx.directives.other import TocTree, glob_re
 from sphinx.ext.autosummary import import_by_name

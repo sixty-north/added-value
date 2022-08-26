@@ -1,4 +1,5 @@
-from collections import Mapping, deque
+from collections import deque
+from collections.abc import Mapping
 from itertools import product, chain, repeat
 
 from added_value.items_table_directive import NonStringIterable
