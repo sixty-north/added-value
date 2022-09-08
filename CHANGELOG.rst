@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Resolving packaging difficulties
+$(next-version) - Resolving more packaging difficulties
+
+0.21.2 - Resolving packaging difficulties
 
 0.21.0 - Transition from TravisCI to GitHub actions build and support Python 3.10
 
