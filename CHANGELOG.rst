@@ -2,6 +2,8 @@
 Changelog
 =========
 
+$(next-version) - Fixes a problem with literal-str which was erroneously quoting strings
+
 0.21.3 - Resolving more packaging difficulties
 
 0.21.2 - Resolving packaging difficulties
