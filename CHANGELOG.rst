@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Fixes a problem with literal-str which was erroneously quoting strings
+$(next-version) - Build system updates
+
+0.21.4 - Fixes a problem with literal-str which was erroneously quoting strings
 
 0.21.3 - Resolving more packaging difficulties
 
