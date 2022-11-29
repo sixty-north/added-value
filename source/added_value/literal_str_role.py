@@ -11,10 +11,10 @@ def make_literal_str_node(rawtext, app, prefixed_name, obj, parent, modname, opt
     :param prefixed_name: The dotted Python name for obj.
     :param obj: The Python object to be rendered to text.
     :param parent: The parent Python object of obj.
-    :param module: The name of the module containing obj.
+    :param modname: The name of the module containing obj.
     :param options: Options dictionary passed to role func.
     """
-    text = repr(obj)
+    text = str(obj)
     node = nodes.literal(text=text, rawsource=rawtext)
     return node
 
