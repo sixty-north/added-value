@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next-version) - Resolving more packaging difficulties
+0.21.3 - Resolving more packaging difficulties
 
 0.21.2 - Resolving packaging difficulties
 
