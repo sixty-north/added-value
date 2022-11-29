@@ -23,7 +23,7 @@ def app(make_app):
     assert src_dir.isabs(), f"{src_dir} is not an absolute srcdir path as required by the Sphinx make_app() fixture"
     build_dir = path(build_dirpath).abspath()
     assert build_dir.isabs(), f" is not an absolute builddir path as required by the Sphinx make_app() fixture"
-    shutil.rmtree(build_dirpath)
+    shutil.rmtree(build_dirpath, ignore_errors=True)
     return make_app(srcdir=src_dir, builddir=build_dir)
 
 
