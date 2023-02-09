@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next-version) - Minor fixes to the documentation.
+0.22.0 - Minor fixes to the documentation.
 
 0.21.5 - Build system updates
 
