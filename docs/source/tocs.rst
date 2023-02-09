@@ -70,7 +70,7 @@ So given this code in ``pages.py``,
    :lines: 9-14
 
 
-And given the same directory structure as before alogside this file ``tocs.rst``::
+And given the same directory structure as before alongside this file ``tocs.rst``::
 
     ├── chemistry
     │   ├── Be.rst
