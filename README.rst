@@ -38,45 +38,28 @@ The package supports Python 3 only. To install::
   $ pip install added-value
 
 
+Usage
+=====
 
-Development
-===========
-
-Maintenance
------------
-
-::
-
-  $ pip install -e .
-
-
-
-Testing
--------
+*Added Value* provides a number of roles and directives for embedding Python values into your
+documentation. For example, sing added value we can extract the value of *pi* from the Python
+Standard Library ``math`` module, and embed it in a sentence, using the ``format`` role provided
+by *Added Values*, like this:
 
 ::
 
-  $ pip install -e .[test]
-  $ pytest --cov=source tests
+    The ratio of the circumference to the diameter of a circle is :format:`math.pi, .3f` to three
+    decimal places.
 
+Which gives:
 
-Documentation
--------------
+    The ratio of the circumference to the diameter of a circle is :format:`math.pi, .3f` to three
+    decimal places.
 
-::
+Powerful tools
+--------------
 
-  $ pip install -e .[docs]
-  $ cd docs
-  $ make html
+Added value is powerful, and allows lists, dictionaries, and even complex data structures such as
+lists of lists of dictionaries to be rendered into tables in various ways. Consult the
+`documentation <https://added-value.readthedocs.io/en/latest/>`_ for more details.
 
-
-Release
--------
-
-::
-
-  $ pip install -e .[deploy]
-  $ bumpversion minor
-  $ python setup.py sdist bdist_wheel
-  $ twine upload --config-file <path>/sixty-north.pypirc dist/*
-  $ git push origin
