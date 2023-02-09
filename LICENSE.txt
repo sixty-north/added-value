@@ -1,4 +1,4 @@
-Copyright 2018 Sixty North AS
+Copyright 2023 Sixty North AS
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
 following conditions are met:

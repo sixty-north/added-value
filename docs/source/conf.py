@@ -32,7 +32,7 @@ sys.path.insert(0, added_value_extension_filepath)
 # -- Project information -----------------------------------------------------
 
 project = u'Added Value'
-copyright = u'2021, Sixty North AS'
+copyright = u'2023, Sixty North AS'
 author = u'Sixty North AS'
 
 # The short X.Y version
