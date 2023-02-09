@@ -16,16 +16,13 @@ Status
 
 Build status:
 
-.. image:: https://travis-ci.org/sixty-north/added-value.svg?branch=master
-    :target: https://travis-ci.org/sixty-north/added-value
+.. image:: https://github.com/sixty-north/added-value/workflows/CI/badge.svg?branch=master
+     :target: https://github.com/sixty-north/added-value/actions?workflow=CI
+     :alt: CI Status
 
 .. image:: https://readthedocs.org/projects/added-value/badge/?version=latest
     :target: https://added-value.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-
-.. image:: https://coveralls.io/repos/github/sixty-north/added-value/badge.svg?branch=master
-    :target: https://coveralls.io/github/sixty-north/added-value?branch=master
-
 
 
 Installation

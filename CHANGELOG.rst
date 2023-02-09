@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Build system updates
+$(next-version) - Minor fixes to the documentation.
+
+0.21.5 - Build system updates
 
 0.21.4 - Fixes a problem with literal-str which was erroneously quoting strings
 
