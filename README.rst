@@ -53,7 +53,7 @@ by *Added Values*, like this:
 
 Which gives:
 
-    The ratio of the circumference to the diameter of a circle is :format:`math.pi, .3f` to three
+    The ratio of the circumference to the diameter of a circle is 3.142 to three
     decimal places.
 
 Powerful tools
