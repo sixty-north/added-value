@@ -13,6 +13,17 @@ used by the software.  Uses of Added Value are not specific to documenting sourc
 can help in that task in conjunction with Sphinx' tools for such at the roles and directives in the
 Python, and other language domains.
 
+
+Installation
+============
+
+Install using ``pip``:
+
+::
+
+   pip install added-value
+
+
 Some Quick Examples
 ===================
 
@@ -58,6 +69,9 @@ which when rendered, looks like this:
 
 Reference Documentation
 =======================
+
+*Added Value* knows how to create scalar values, lists, and tables from Python objects. Check out
+the reference documentation for more details:
 
 .. toctree::
    :maxdepth: 1
