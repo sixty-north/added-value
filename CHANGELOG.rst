@@ -2,7 +2,7 @@
 Changelog
 =========
 
-$(next_version) - Updates copyright notices.
+$(next-version) - Updates copyright notices.
 
 0.22.0 - Minor fixes to the documentation.
 
