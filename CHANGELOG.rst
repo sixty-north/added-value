@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Updates copyright notices.
+$(next-version) - Refines the error reporting for directives with respect to import failures.
+
+0.22.1 - Updates copyright notices.
 
 0.22.0 - Minor fixes to the documentation.
 

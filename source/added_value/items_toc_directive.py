@@ -1,10 +1,10 @@
 from collections.abc import Mapping
 
 from sphinx.directives.other import TocTree, glob_re
-from sphinx.ext.autosummary import import_by_name
 from sphinx.util import url_re, docname_join
 from sphinx.util.matching import Matcher, patfilter
 
+from added_value.importer import import_object
 from added_value.non_string_iterable import NonStringIterable
 
 
@@ -21,12 +21,7 @@ class ItemsTableOfContentsDirective(TocTree):
 
         obj_name = self.arguments[0]
 
-        try:
-            prefixed_name, obj, parent, modname = import_by_name(obj_name)
-        except ImportError:
-            raise self.error(
-                "Could not locate Python object {} ({} directive).".format(obj_name, self.name)
-            )
+        obj, prefixed_name = import_object(obj_name, context=self)
 
         if isinstance(obj, Mapping):
             # Explicit mapping of titles to document links ("Some Title <document>")

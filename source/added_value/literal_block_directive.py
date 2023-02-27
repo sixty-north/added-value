@@ -3,13 +3,13 @@ import logging
 from docutils import nodes
 from docutils.parsers.rst.directives import unchanged, flag, unchanged_required, class_option
 from sphinx.directives.code import dedent_lines, container_wrapper
-from sphinx.ext.autosummary import import_by_name
 from sphinx.util import parselinenos
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import set_source_info
 from sphinx.locale import __
 
 from added_value.common_options import CLASS_OPTION, NAME_OPTION
+from added_value.importer import import_object
 
 logger = logging.getLogger(__name__)
 
@@ -40,12 +40,7 @@ class LiteralBlockDirective(SphinxDirective):
     def run(self):
         obj_name = self.arguments[0]
 
-        try:
-            prefixed_name, obj, parent, modname = import_by_name(obj_name)
-        except ImportError:
-            raise self.error(
-                "Could not locate Python object {} ({} directive).".format(obj_name, self.name)
-            )
+        obj, prefixed_name = import_object(obj_name, context=self)
 
         document = self.state.document
         code = str(obj)

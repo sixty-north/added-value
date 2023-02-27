@@ -10,10 +10,10 @@ from docutils.parsers.rst.directives.tables import align
 from docutils.statemachine import StringList
 from docutils import nodes
 from six import StringIO
-from sphinx.ext.autosummary import import_by_name
 
 from added_value.common_options import CLASS_OPTION, ALIGN_OPTION, NAME_OPTION
 from added_value.grammatical_conjunctions import list_conjunction
+from added_value.importer import import_object
 from added_value.util import run_length_encode
 from added_value.multisort import asc, dec, as_is
 from added_value.non_string_iterable import NonStringIterable
@@ -45,7 +45,7 @@ VISIBILITIES = {"show": True, "hide": False}
 class ItemsTableDirective(Directive):
     """Format a data structure as a table.
 
-    If the items of the sequence are themselves sequences, they will formatted as rows.
+    If the items of the sequence are themselves sequences, they will be formatted as rows.
     """
 
     required_arguments = 1
@@ -331,13 +331,7 @@ class ItemsTableDirective(Directive):
     def run(self):
 
         obj_name = self.arguments[0]
-
-        try:
-            prefixed_name, obj, parent, modname = import_by_name(obj_name)
-        except ImportError:
-            raise self.error(
-                "Could not locate Python object {} ({} directive).".format(obj_name, self.name)
-            )
+        obj, prefixed_name = import_object(obj_name, context=self)
         table_head, max_header_cols = self.process_header_option()
         rows, max_cols = self.interpret_obj(
             obj,
