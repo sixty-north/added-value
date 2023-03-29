@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Allow referenced attributes to be callables with literal arguments.
+$(next-version) - The object specified for the directives can now be a callable with literal arguments.
+
+0.23.0 - Allow referenced attributes to be callables with literal arguments.
 
 0.22.2 - Refines the error reporting for directives with respect to import failures.
 

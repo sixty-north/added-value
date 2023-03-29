@@ -5,6 +5,7 @@ from sphinx.util import url_re, docname_join
 from sphinx.util.matching import Matcher, patfilter
 
 from added_value.importer import import_object
+from added_value.invoke import parse_call, resolve_attr
 from added_value.non_string_iterable import NonStringIterable
 
 
@@ -18,10 +19,10 @@ class ItemsTableOfContentsDirective(TocTree):
     def parse_content(self, toctree):
         # We override parse_content to retrieve information about the linked pages
         # from the argument object, rather than from the content of the directive.
-
-        obj_name = self.arguments[0]
-
-        obj, prefixed_name = import_object(obj_name, context=self)
+        name = self.arguments[0]
+        attribute_name, args = parse_call(name)
+        attr, prefixed_name = import_object(attribute_name, context=self)
+        obj = resolve_attr(attr, args)
 
         if isinstance(obj, Mapping):
             # Explicit mapping of titles to document links ("Some Title <document>")

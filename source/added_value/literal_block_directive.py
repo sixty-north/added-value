@@ -10,6 +10,7 @@ from sphinx.locale import __
 
 from added_value.common_options import CLASS_OPTION, NAME_OPTION
 from added_value.importer import import_object
+from added_value.invoke import parse_call, resolve_attr
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +39,10 @@ class LiteralBlockDirective(SphinxDirective):
     }
 
     def run(self):
-        obj_name = self.arguments[0]
-
-        obj, prefixed_name = import_object(obj_name, context=self)
+        name = self.arguments[0]
+        attribute_name, args = parse_call(name)
+        attr, prefixed_name = import_object(attribute_name, context=self)
+        obj = resolve_attr(attr, args)
 
         document = self.state.document
         code = str(obj)

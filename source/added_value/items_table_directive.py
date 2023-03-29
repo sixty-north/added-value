@@ -14,6 +14,7 @@ from six import StringIO
 from added_value.common_options import CLASS_OPTION, ALIGN_OPTION, NAME_OPTION
 from added_value.grammatical_conjunctions import list_conjunction
 from added_value.importer import import_object
+from added_value.invoke import parse_call, resolve_attr
 from added_value.util import run_length_encode
 from added_value.multisort import asc, dec, as_is
 from added_value.non_string_iterable import NonStringIterable
@@ -329,9 +330,11 @@ class ItemsTableDirective(Directive):
 
 
     def run(self):
+        name = self.arguments[0]
+        attribute_name, args = parse_call(name)
+        attr, prefixed_name = import_object(attribute_name, context=self)
+        obj = resolve_attr(attr, args)
 
-        obj_name = self.arguments[0]
-        obj, prefixed_name = import_object(obj_name, context=self)
         table_head, max_header_cols = self.process_header_option()
         rows, max_cols = self.interpret_obj(
             obj,
