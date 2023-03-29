@@ -1,4 +1,5 @@
 import json
+import math
 from collections import OrderedDict
 
 the_answer = 42
@@ -117,5 +118,16 @@ OPCODES =  {
 class MyClass:
 
     class_attribute = 89
+
+    def method(self):
+        return 978
+
+
+def greatest_common_divisor(*args):
+    """Return the greatest common divisor of the given integers."""
+    return math.gcd(*args)
+
+
+instance = MyClass()
 
 json_month_lengths = json.dumps(month_lengths, indent=4)

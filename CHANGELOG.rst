@@ -2,7 +2,9 @@
 Changelog
 =========
 
-$(next-version) - Refines the error reporting for directives with respect to import failures.
+$(next-version) - Allow referenced attributes to be callables with literal arguments.
+
+0.22.2 - Refines the error reporting for directives with respect to import failures.
 
 0.22.1 - Updates copyright notices.
 
