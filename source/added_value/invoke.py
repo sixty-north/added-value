@@ -1,4 +1,7 @@
-def parse_call(text: str) -> tuple[str, str]:
+from typing import Tuple
+
+
+def parse_call(text: str) -> Tuple[str, str]:
     """Parse a string containing a reference to a Python attribute or invocation thereof.
 
     Args:
